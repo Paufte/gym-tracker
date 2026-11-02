@@ -1,0 +1,412 @@
+{
+ "app": "personal-gym-tracker",
+ "version": 1,
+ "exportedAt": 1793568000000,
+ "exercises": [
+  {
+   "id": "press-inclinat-maquina",
+   "name": "Press inclinat en màquina",
+   "createdAt": 1793568000000,
+   "updatedAt": 1793568000000
+  },
+  {
+   "id": "pec-deck",
+   "name": "Pec Deck",
+   "createdAt": 1793568000000,
+   "updatedAt": 1793568000000
+  },
+  {
+   "id": "extensio-triceps-politja",
+   "name": "Extensió de tríceps en politja",
+   "createdAt": 1793568000000,
+   "updatedAt": 1793568000000
+  },
+  {
+   "id": "elevacions-laterals-maquina",
+   "name": "Elevacions laterals d’espatlla en màquina",
+   "createdAt": 1793568000000,
+   "updatedAt": 1793568000000
+  },
+  {
+   "id": "fons-triceps-maquina",
+   "name": "Fons de tríceps en màquina",
+   "createdAt": 1793568000000,
+   "updatedAt": 1793568000000
+  },
+  {
+   "id": "press-militar",
+   "name": "Press militar",
+   "createdAt": 1793568000000,
+   "updatedAt": 1793568000000
+  },
+  {
+   "id": "jalon-pecho",
+   "name": "Jalón al pecho",
+   "createdAt": 1793568000000,
+   "updatedAt": 1793568000000
+  },
+  {
+   "id": "pajaros-deltoide-posterior",
+   "name": "Pàjaros en màquina (deltoide posterior)",
+   "createdAt": 1793568000000,
+   "updatedAt": 1793568000000
+  },
+  {
+   "id": "curl-predicador-maquina",
+   "name": "Curl predicador en màquina",
+   "createdAt": 1793568000000,
+   "updatedAt": 1793568000000
+  },
+  {
+   "id": "rem-unilateral-dorsal",
+   "name": "Rem unilateral en màquina (dorsal)",
+   "createdAt": 1793568000000,
+   "updatedAt": 1793568000000
+  },
+  {
+   "id": "rem-alt-esquena-alta",
+   "name": "Rem alt en màquina (esquena alta)",
+   "createdAt": 1793568000000,
+   "updatedAt": 1793568000000
+  },
+  {
+   "id": "curl-biceps-inclinat",
+   "name": "Curl de bíceps inclinat en banc",
+   "createdAt": 1793568000000,
+   "updatedAt": 1793568000000
+  },
+  {
+   "id": "elevacions-bessons-maquina",
+   "name": "Elevacions de bessons en màquina",
+   "createdAt": 1793568000000,
+   "updatedAt": 1793568000000
+  },
+  {
+   "id": "adduccio-maluc-maquina",
+   "name": "Adducció de maluc en màquina",
+   "createdAt": 1793568000000,
+   "updatedAt": 1793568000000
+  },
+  {
+   "id": "curl-femoral-assegut",
+   "name": "Curl femoral assegut",
+   "createdAt": 1793568000000,
+   "updatedAt": 1793568000000
+  },
+  {
+   "id": "extensio-cames-maquina",
+   "name": "Extensió de cames en màquina",
+   "createdAt": 1793568000000,
+   "updatedAt": 1793568000000
+  },
+  {
+   "id": "premsa-cames",
+   "name": "Premsa de cames",
+   "createdAt": 1793568000000,
+   "updatedAt": 1793568000000
+  },
+  {
+   "id": "crunch-abdominal-maquina",
+   "name": "Crunch abdominal en màquina",
+   "createdAt": 1793568000000,
+   "updatedAt": 1793568000000
+  },
+  {
+   "id": "rotacio-tronc-oblics",
+   "name": "Rotació de tronc en màquina (oblics)",
+   "createdAt": 1793568000000,
+   "updatedAt": 1793568000000
+  },
+  {
+   "id": "press-frances-barra-z",
+   "name": "Press francès amb barra Z",
+   "createdAt": 1793568000000,
+   "updatedAt": 1793568000000
+  }
+ ],
+ "routines": [
+  {
+   "id": "empujes",
+   "letter": "A",
+   "name": "Empujes",
+   "color": "red",
+   "order": 0,
+   "updatedAt": 1793568000000,
+   "items": [
+    {
+     "exerciseId": "press-inclinat-maquina",
+     "sets": 3,
+     "repMin": 5,
+     "repMax": 10,
+     "rest": null
+    },
+    {
+     "exerciseId": "pec-deck",
+     "sets": 3,
+     "repMin": 5,
+     "repMax": 10,
+     "rest": null
+    },
+    {
+     "exerciseId": "extensio-triceps-politja",
+     "sets": 3,
+     "repMin": 5,
+     "repMax": 10,
+     "rest": null
+    },
+    {
+     "exerciseId": "elevacions-laterals-maquina",
+     "sets": 3,
+     "repMin": 5,
+     "repMax": 10,
+     "rest": null
+    },
+    {
+     "exerciseId": "fons-triceps-maquina",
+     "sets": 3,
+     "repMin": 5,
+     "repMax": 10,
+     "rest": null
+    },
+    {
+     "exerciseId": "press-militar",
+     "sets": 3,
+     "repMin": 5,
+     "repMax": 10,
+     "rest": null
+    }
+   ]
+  },
+  {
+   "id": "jalones",
+   "letter": "B",
+   "name": "Jalones",
+   "color": "blue",
+   "order": 1,
+   "updatedAt": 1793568000000,
+   "items": [
+    {
+     "exerciseId": "jalon-pecho",
+     "sets": 3,
+     "repMin": 5,
+     "repMax": 10,
+     "rest": null
+    },
+    {
+     "exerciseId": "pajaros-deltoide-posterior",
+     "sets": 3,
+     "repMin": 5,
+     "repMax": 10,
+     "rest": null
+    },
+    {
+     "exerciseId": "curl-predicador-maquina",
+     "sets": 3,
+     "repMin": 5,
+     "repMax": 10,
+     "rest": null
+    },
+    {
+     "exerciseId": "rem-unilateral-dorsal",
+     "sets": 3,
+     "repMin": 5,
+     "repMax": 10,
+     "rest": null
+    },
+    {
+     "exerciseId": "rem-alt-esquena-alta",
+     "sets": 3,
+     "repMin": 5,
+     "repMax": 10,
+     "rest": null
+    },
+    {
+     "exerciseId": "curl-biceps-inclinat",
+     "sets": 3,
+     "repMin": 5,
+     "repMax": 10,
+     "rest": null
+    }
+   ]
+  },
+  {
+   "id": "cames",
+   "letter": "C",
+   "name": "Cames",
+   "color": "yellow",
+   "order": 2,
+   "updatedAt": 1793568000000,
+   "items": [
+    {
+     "exerciseId": "elevacions-bessons-maquina",
+     "sets": 3,
+     "repMin": 5,
+     "repMax": 10,
+     "rest": null
+    },
+    {
+     "exerciseId": "adduccio-maluc-maquina",
+     "sets": 3,
+     "repMin": 5,
+     "repMax": 10,
+     "rest": null
+    },
+    {
+     "exerciseId": "curl-femoral-assegut",
+     "sets": 3,
+     "repMin": 5,
+     "repMax": 10,
+     "rest": null
+    },
+    {
+     "exerciseId": "extensio-cames-maquina",
+     "sets": 3,
+     "repMin": 5,
+     "repMax": 10,
+     "rest": null
+    },
+    {
+     "exerciseId": "premsa-cames",
+     "sets": 3,
+     "repMin": 5,
+     "repMax": 10,
+     "rest": null
+    },
+    {
+     "exerciseId": "crunch-abdominal-maquina",
+     "sets": 3,
+     "repMin": 5,
+     "repMax": 10,
+     "rest": null
+    },
+    {
+     "exerciseId": "rotacio-tronc-oblics",
+     "sets": 3,
+     "repMin": 5,
+     "repMax": 10,
+     "rest": null
+    }
+   ]
+  },
+  {
+   "id": "pit-esquena",
+   "letter": "D",
+   "name": "Pit + Esquena",
+   "color": "green",
+   "order": 3,
+   "updatedAt": 1793568000000,
+   "items": [
+    {
+     "exerciseId": "press-inclinat-maquina",
+     "sets": 3,
+     "repMin": 5,
+     "repMax": 10,
+     "rest": null
+    },
+    {
+     "exerciseId": "pec-deck",
+     "sets": 3,
+     "repMin": 5,
+     "repMax": 10,
+     "rest": null
+    },
+    {
+     "exerciseId": "jalon-pecho",
+     "sets": 3,
+     "repMin": 5,
+     "repMax": 10,
+     "rest": null
+    },
+    {
+     "exerciseId": "pajaros-deltoide-posterior",
+     "sets": 3,
+     "repMin": 5,
+     "repMax": 10,
+     "rest": null
+    },
+    {
+     "exerciseId": "rem-unilateral-dorsal",
+     "sets": 3,
+     "repMin": 5,
+     "repMax": 10,
+     "rest": null
+    },
+    {
+     "exerciseId": "rem-alt-esquena-alta",
+     "sets": 3,
+     "repMin": 5,
+     "repMax": 10,
+     "rest": null
+    }
+   ]
+  },
+  {
+   "id": "bracos",
+   "letter": "E",
+   "name": "Braços",
+   "color": "white",
+   "order": 4,
+   "updatedAt": 1793568000000,
+   "items": [
+    {
+     "exerciseId": "press-frances-barra-z",
+     "sets": 3,
+     "repMin": 5,
+     "repMax": 10,
+     "rest": null
+    },
+    {
+     "exerciseId": "extensio-triceps-politja",
+     "sets": 3,
+     "repMin": 5,
+     "repMax": 10,
+     "rest": null
+    },
+    {
+     "exerciseId": "curl-predicador-maquina",
+     "sets": 3,
+     "repMin": 5,
+     "repMax": 10,
+     "rest": null
+    },
+    {
+     "exerciseId": "elevacions-laterals-maquina",
+     "sets": 3,
+     "repMin": 5,
+     "repMax": 10,
+     "rest": null
+    },
+    {
+     "exerciseId": "press-militar",
+     "sets": 3,
+     "repMin": 5,
+     "repMax": 10,
+     "rest": null
+    },
+    {
+     "exerciseId": "curl-biceps-inclinat",
+     "sets": 3,
+     "repMin": 5,
+     "repMax": 10,
+     "rest": null
+    },
+    {
+     "exerciseId": "elevacions-bessons-maquina",
+     "sets": 3,
+     "repMin": 5,
+     "repMax": 10,
+     "rest": null
+    }
+   ]
+  }
+ ],
+ "sessions": [],
+ "config": [
+  {
+   "id": "settings",
+   "restDefault": 90,
+   "increment": 2.5,
+   "updatedAt": 1793568000000
+  }
+ ]
+}
