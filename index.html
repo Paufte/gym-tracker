@@ -1,0 +1,1411 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Gym">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<title>Personal Gym Tracker</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@300;500;600;650;700&display=swap">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<script>window.PGT_SUPA = {"url": "https://ueblksnlgsidhaoxezjv.supabase.co", "key": "sb_publishable_QtnlUzkooIZ_9N5m0IQmEw_M_Ob6JWf"};</script>
+<script src="vendor/supabase.js"></script>
+</head>
+<body>
+<style>
+/* Layout: product-page rhythm. Each top-level screen opens with an editorial hero (kicker, display title ending in the accent full stop, lede), then hairline-ruled sections with big tabular numbers. Surfaces only where they group real controls (sets, charts). Accent: one electric blue. */
+:root {
+  --bg: #f5f5f7;
+  --surface: #ffffff;
+  --surface-2: #fbfbfd;
+  --fill: rgba(0, 0, 0, .045);
+  --fill-2: rgba(0, 0, 0, .08);
+  --line: #d9d9de;
+  --hair: rgba(0, 0, 0, .09);
+  --fg: #1d1d1f;
+  --muted: #6e6e73;
+  --faint: #a1a1a6;
+  --accent: #2448ff;
+  --accent-soft: rgba(36, 72, 255, .09);
+  --on-accent: #ffffff;
+  --chalk: var(--accent);
+  --on-chalk: #ffffff;
+  --bar: rgba(245, 245, 247, .86);
+  --ok: #1f8a4c; --warn: #b26a00; --bad: #d42a1f;
+  --f-display: "Inter Tight", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  --f-body: "Inter", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  --f-mono: var(--f-display);
+  --r: 18px;
+  --ease: cubic-bezier(.2, .8, .2, 1);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #000000; --surface: #121214; --surface-2: #161618; --fill: rgba(255, 255, 255, .07); --fill-2: rgba(255, 255, 255, .12);
+    --line: #2c2c2e; --hair: rgba(255, 255, 255, .1); --fg: #f5f5f7; --muted: #8e8e93; --faint: #5c5c61;
+    --accent: #5b78ff; --accent-soft: rgba(91, 120, 255, .16); --bar: rgba(0, 0, 0, .8);
+    --ok: #3ccf7a; --warn: #f0a33a; --bad: #ff5a4f;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #000000; --surface: #121214; --surface-2: #161618; --fill: rgba(255, 255, 255, .07); --fill-2: rgba(255, 255, 255, .12);
+  --line: #2c2c2e; --hair: rgba(255, 255, 255, .1); --fg: #f5f5f7; --muted: #8e8e93; --faint: #5c5c61;
+  --accent: #5b78ff; --accent-soft: rgba(91, 120, 255, .16); --bar: rgba(0, 0, 0, .8);
+  --ok: #3ccf7a; --warn: #f0a33a; --bad: #ff5a4f;
+  color-scheme: dark;
+}
+[data-c] { --pc: var(--accent); }
+
+* { box-sizing: border-box; }
+html, body { background: var(--bg); }
+body { color: var(--fg); font: 16px/1.47 var(--f-body); letter-spacing: -.011em; -webkit-text-size-adjust: 100%; -webkit-font-smoothing: antialiased; font-feature-settings: "cv11", "ss01"; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--bg); }
+button, input, select, textarea { font: inherit; color: inherit; letter-spacing: inherit; }
+button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+.mono, .num, .kpi .v, .big { font-family: var(--f-display); font-variant-numeric: tabular-nums; }
+.muted { color: var(--muted); }
+.faint { color: var(--faint); }
+h1, h2, h3 { font-family: var(--f-display); font-weight: 600; margin: 0; text-wrap: balance; letter-spacing: -.03em; line-height: 1.05; }
+.dot { color: var(--accent); }
+.eyebrow, .kicker { font-family: var(--f-body); font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+
+#app { max-width: 980px; margin: 0 auto; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); padding-block: 0 calc(120px + env(safe-area-inset-bottom, 0px)); min-height: 100%; }
+.narrow { max-width: 680px; margin-inline: auto; }
+
+/* View entrance: content is visible at rest; it only rises on navigation */
+.enter .rv { animation: rise .7s var(--ease) both; }
+.enter .rv:nth-child(2) { animation-delay: .05s; } .enter .rv:nth-child(3) { animation-delay: .1s; } .enter .rv:nth-child(4) { animation-delay: .15s; } .enter .rv:nth-child(5) { animation-delay: .2s; } .enter .rv:nth-child(n+6) { animation-delay: .25s; }
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } }
+
+/* Hero */
+.hero { padding: clamp(28px, 7vw, 72px) 0 clamp(8px, 2vw, 16px); display: grid; gap: 14px; }
+.hero-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 28px; }
+.brand { font-family: var(--f-display); font-weight: 600; font-size: 15px; letter-spacing: -.01em; }
+.display { font-size: clamp(46px, 12.5vw, 104px); font-weight: 650; letter-spacing: -.045em; line-height: .96; }
+.display.md { font-size: clamp(40px, 10vw, 76px); }
+.display .soft { color: var(--faint); }
+.lede { font-size: clamp(17px, 2.4vw, 21px); line-height: 1.38; color: var(--muted); margin: 0; max-width: 34ch; letter-spacing: -.016em; }
+.lede b { color: var(--fg); font-weight: 600; }
+.cta { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; margin-top: 10px; }
+
+/* Sync status */
+.sync { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; }
+.sync i { width: 7px; height: 7px; border-radius: 50%; background: var(--faint); display: inline-block; flex: none; }
+.sync b { font-weight: 500; overflow: hidden; text-overflow: ellipsis; }
+.sync[data-s="ok"] i { background: var(--ok); }
+.sync[data-s="saving"] i { background: var(--warn); animation: pulse 1s infinite; }
+.sync[data-s="error"] i, .sync[data-s="offline"] i { background: var(--bad); }
+.sync[data-s="local"] i { background: var(--warn); }
+@keyframes pulse { 50% { opacity: .3; } }
+
+/* Nav bar on pushed screens */
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 8px; min-height: 52px; margin-inline: calc(-1 * max(20px, env(safe-area-inset-left, 0px))); padding-inline: max(10px, env(safe-area-inset-left, 0px)); background: var(--bar); -webkit-backdrop-filter: saturate(160%) blur(14px); backdrop-filter: saturate(160%) blur(14px); border-bottom: 1px solid var(--hair); }
+.top h1 { font-family: var(--f-body); font-size: 15px; font-weight: 600; letter-spacing: -.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; max-width: 52vw; }
+.top .lft { display: flex; align-items: center; min-width: 0; }
+.top .rgt { display: flex; align-items: center; justify-content: flex-end; gap: 12px; min-width: 0; padding-right: 10px; font-size: 13px; }
+@media (max-width: 480px) { .top .sync b { display: none; } }
+.icon-btn { min-width: 44px; height: 44px; border: 0; background: none; display: inline-flex; align-items: center; gap: 2px; color: var(--accent); font-size: 16px; font-weight: 500; padding: 0 8px; border-radius: 10px; }
+.icon-btn svg { width: 20px; height: 20px; }
+.icon-btn:hover { background: var(--accent-soft); }
+
+/* Sections */
+.section { margin-top: clamp(44px, 8vw, 80px); display: grid; gap: 14px; }
+.section > header { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+.section > header h2 { font-size: clamp(26px, 5vw, 36px); }
+.section.tight { margin-top: 28px; }
+.sub-h { font-family: var(--f-display); font-size: 21px; font-weight: 600; letter-spacing: -.025em; }
+.link { background: none; border: 0; color: var(--accent); font-size: 15px; font-weight: 500; padding: 4px 0; white-space: nowrap; }
+.link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.link::after { content: " ›"; }
+.link.plain::after { content: ""; }
+
+/* Buttons */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 50px; padding: 0 24px; border-radius: 999px; border: 0; background: var(--fill); color: var(--fg); font-size: 16px; font-weight: 600; letter-spacing: -.01em; transition: transform .2s var(--ease), background .2s, opacity .2s; }
+.btn:hover { background: var(--fill-2); }
+.btn:active { transform: scale(.97); }
+.btn.primary { background: var(--accent); color: var(--on-accent); }
+.btn.primary:hover { background: color-mix(in srgb, var(--accent) 88%, var(--fg)); }
+.btn.primary.plate { background: var(--accent); color: var(--on-accent); }
+.btn.danger { color: var(--bad); background: none; }
+.btn.danger:hover { background: color-mix(in srgb, var(--bad) 8%, transparent); }
+.btn.block { width: 100%; }
+.btn.sm { min-height: 36px; padding: 0 14px; font-size: 14px; font-weight: 500; }
+.btn:disabled { opacity: .35; cursor: default; transform: none; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.row > .grow { flex: 1; }
+.plate-dot { display: none; }
+.tag { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; white-space: nowrap; }
+
+/* Big numbers band */
+.figures { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--line); }
+.figures.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.fig { padding: 18px 14px 4px 0; display: grid; gap: 4px; align-content: start; min-width: 0; }
+.fig + .fig { padding-left: 14px; border-left: 1px solid var(--line); }
+.fig .big { font-size: clamp(30px, 7vw, 56px); font-weight: 600; letter-spacing: -.04em; line-height: 1; white-space: nowrap; }
+.fig .big small { font-size: .38em; font-weight: 500; color: var(--muted); margin-left: 3px; letter-spacing: -.01em; }
+.fig .l { font-size: 13px; color: var(--muted); }
+@media (max-width: 560px) { .figures.four { grid-template-columns: repeat(2, minmax(0, 1fr)); } .figures.four .fig:nth-child(3) { padding-left: 0; border-left: 0; } .figures.four .fig:nth-child(n+3) { border-top: 1px solid var(--line); margin-top: 14px; } }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 14px 18px; }
+.kpi .v { font-weight: 600; font-size: 28px; line-height: 1.05; letter-spacing: -.035em; }
+.kpi .v small { font-size: 14px; font-weight: 500; color: var(--muted); margin-left: 3px; }
+.kpi .l { font-size: 13px; color: var(--muted); margin-top: 4px; }
+.delta-up { color: var(--ok); } .delta-down { color: var(--bad); }
+
+/* Routine index: editorial rows, no cards */
+.routines { display: grid; }
+.rcard { display: grid; grid-template-columns: clamp(52px, 12vw, 96px) minmax(0, 1fr) auto; align-items: center; gap: clamp(12px, 3vw, 28px); padding: clamp(16px, 3vw, 24px) 0; border: 0; border-bottom: 1px solid var(--line); background: none; text-align: left; color: var(--fg); transition: padding .35s var(--ease); }
+.rcard .letter { font-family: var(--f-display); font-size: clamp(44px, 10vw, 84px); font-weight: 300; line-height: .85; letter-spacing: -.05em; color: var(--faint); transition: color .3s; }
+.rcard .rmain { display: grid; gap: 2px; min-width: 0; }
+.rcard .name { font-family: var(--f-display); font-size: clamp(22px, 4.6vw, 34px); font-weight: 600; letter-spacing: -.03em; line-height: 1.1; }
+.rcard .meta { font-size: 14px; color: var(--muted); }
+.rcard .go { font-size: 22px; color: var(--faint); transition: transform .35s var(--ease), color .3s; }
+@media (hover: hover) { .rcard:hover .letter, .rcard:hover .go { color: var(--accent); } .rcard:hover .go { transform: translateX(5px); } }
+.rcard:active .letter { color: var(--accent); }
+.sheet .rcard { padding: 14px 0; grid-template-columns: 48px minmax(0, 1fr) auto; }
+.sheet .rcard .letter { font-size: 40px; }
+.sheet .rcard .name { font-size: 21px; }
+.sheet .rcard.suggest .letter { color: var(--accent); }
+
+/* Surfaces */
+.panel { background: var(--surface); border-radius: var(--r); padding: clamp(18px, 3vw, 26px); display: grid; gap: 14px; min-width: 0; border: 0; color: var(--fg); }
+.panel.tap { text-align: left; width: 100%; transition: transform .25s var(--ease); }
+.panel.tap:active { transform: scale(.99); }
+.feature { display: grid; gap: 18px; }
+.feature .big { font-size: clamp(56px, 15vw, 120px); font-weight: 600; letter-spacing: -.05em; line-height: .9; }
+.feature .big small { font-size: .3em; color: var(--muted); font-weight: 500; letter-spacing: -.01em; margin-left: 6px; }
+
+/* Rows with hairlines */
+.list { display: grid; border-top: 1px solid var(--line); }
+.li { position: relative; display: flex; align-items: center; gap: 14px; padding: 16px 0; border: 0; border-bottom: 1px solid var(--line); background: none; text-align: left; width: 100%; min-height: 60px; color: var(--fg); }
+button.li { transition: padding .3s var(--ease); }
+@media (hover: hover) { button.li:hover .chev { color: var(--accent); transform: translateX(4px); } }
+.li .main { flex: 1; min-width: 0; }
+.li .t { font-weight: 500; font-size: 17px; letter-spacing: -.015em; overflow: hidden; text-overflow: ellipsis; }
+.li .s { font-size: 14px; color: var(--muted); }
+.li .end { text-align: right; font-family: var(--f-display); font-size: 17px; font-weight: 600; white-space: nowrap; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+.li .end small { color: var(--muted); font-weight: 500; font-size: 13px; margin-left: 2px; }
+.chev { color: var(--faint); font-size: 20px; line-height: 1; transition: transform .3s var(--ease), color .2s; }
+.num-idx { font-family: var(--f-display); font-size: 15px; font-weight: 500; color: var(--faint); min-width: 26px; font-variant-numeric: tabular-nums; align-self: flex-start; padding-top: 2px; }
+
+/* History timeline */
+.day { display: grid; justify-items: start; min-width: 50px; }
+.day b { font-family: var(--f-display); font-size: 30px; font-weight: 600; letter-spacing: -.04em; line-height: 1; }
+.day span { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
+.month-h { font-family: var(--f-display); font-size: 15px; font-weight: 600; color: var(--muted); padding: 26px 0 8px; letter-spacing: -.01em; text-transform: capitalize; }
+.month-h:first-child { padding-top: 6px; }
+
+.empty { padding: 28px 0; color: var(--muted); display: grid; gap: 6px; justify-items: start; font-size: 15px; border-top: 1px solid var(--line); }
+.empty b { color: var(--fg); font-family: var(--f-display); font-size: 21px; font-weight: 600; letter-spacing: -.02em; }
+.panel .empty { border-top: 0; padding: 8px 0; }
+
+/* Tab bar: words, not icons */
+.tabs { position: fixed; left: 0; right: 0; bottom: 0; z-index: 25; background: var(--bar); -webkit-backdrop-filter: saturate(160%) blur(14px); backdrop-filter: saturate(160%) blur(14px); border-top: 1px solid var(--hair); padding-bottom: env(safe-area-inset-bottom, 0px); padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px); }
+.tabs nav { max-width: 560px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); }
+.tabs button { position: relative; border: 0; background: none; min-height: 54px; font-size: 13px; font-weight: 500; letter-spacing: -.005em; color: var(--muted); transition: color .2s; }
+.tabs button svg { display: none; }
+.tabs button[aria-current="page"] { color: var(--fg); font-weight: 600; }
+.tabs button[aria-current="page"]::after { content: ""; position: absolute; left: 50%; bottom: 8px; width: 4px; height: 4px; margin-left: -2px; border-radius: 50%; background: var(--accent); }
+
+/* Workout */
+.wk-head { display: grid; gap: 12px; padding: 22px 0 6px; }
+.wk-title { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.wk-title h2 { font-size: clamp(38px, 10vw, 60px); letter-spacing: -.045em; line-height: .98; }
+.wk-meta { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 14px; color: var(--muted); }
+.wk-meta b { color: var(--fg); font-family: var(--f-display); font-weight: 600; font-variant-numeric: tabular-nums; }
+.progress { height: 3px; border-radius: 3px; background: var(--fill-2); overflow: hidden; }
+.progress i { display: block; height: 100%; background: var(--accent); border-radius: 3px; transition: width .5s var(--ease); }
+.ex { background: var(--surface); border-radius: var(--r); margin-top: 14px; overflow: hidden; transition: box-shadow .3s; }
+.ex-h { display: flex; align-items: baseline; gap: 12px; padding: 20px 20px 8px; width: 100%; border: 0; background: none; text-align: left; color: var(--fg); }
+.ex-h .idx { font-family: var(--f-display); font-weight: 500; font-size: 15px; color: var(--faint); min-width: 22px; font-variant-numeric: tabular-nums; }
+.ex-h h3 { font-size: 22px; font-weight: 600; flex: 1; min-width: 0; letter-spacing: -.03em; line-height: 1.15; }
+.ex-h .cnt { font-family: var(--f-display); font-size: 15px; font-weight: 500; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.ex.all-done .ex-h .cnt { color: var(--accent); font-weight: 600; }
+.ex.all-done .ex-h .idx { color: var(--accent); }
+.ex-b { padding: 0 20px 20px; display: grid; gap: 14px; }
+.ex.collapsed .ex-b { display: none; }
+.ex.collapsed .ex-h { padding-bottom: 20px; }
+.ref { font-size: 13px; color: var(--muted); display: grid; gap: 3px; }
+.ref .sets { color: var(--fg); font-family: var(--f-display); font-size: 16px; font-weight: 500; font-variant-numeric: tabular-nums; letter-spacing: -.015em; }
+.rec { font-size: 14px; line-height: 1.45; padding: 0 0 0 12px; color: var(--muted); border-left: 2px solid var(--line); }
+.rec.up { color: var(--fg); border-color: var(--ok); }
+.rec.maybe { color: var(--fg); border-color: var(--warn); }
+.rec.down { color: var(--fg); border-color: var(--bad); }
+.sets-t { display: grid; gap: 8px; }
+.set-h, .set { display: grid; grid-template-columns: 20px minmax(0,1fr) minmax(0,1fr) 50px; gap: 10px; align-items: center; }
+.set-h { font-size: 11px; color: var(--faint); font-weight: 600; letter-spacing: .07em; text-transform: uppercase; }
+.set .n { font-family: var(--f-display); font-weight: 500; font-size: 15px; color: var(--faint); text-align: center; font-variant-numeric: tabular-nums; }
+.num { width: 100%; height: 52px; border-radius: 14px; border: 0; background: var(--fill); text-align: center; font-size: 22px; font-weight: 600; letter-spacing: -.03em; padding: 0 6px; transition: box-shadow .2s, background .2s; -webkit-appearance: none; appearance: none; }
+.num:focus { outline: none; box-shadow: inset 0 0 0 2px var(--accent); background: var(--surface); }
+.num::placeholder { color: var(--faint); font-weight: 400; }
+.num.err { box-shadow: inset 0 0 0 2px var(--bad); animation: shake .3s; }
+@keyframes shake { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+.chk { width: 50px; height: 50px; border-radius: 50%; border: 1.5px solid var(--line); background: none; display: grid; place-items: center; color: var(--faint); transition: background .25s var(--ease), color .2s, border-color .2s, transform .2s var(--ease); justify-self: end; }
+.chk:active { transform: scale(.88); }
+.chk svg { width: 20px; height: 20px; }
+.set.done .chk { background: var(--accent); border-color: var(--accent); color: #fff; animation: pop .35s var(--ease); }
+@keyframes pop { 40% { transform: scale(1.12); } }
+.set.done .n { color: var(--accent); }
+.set-x { display: flex; flex-wrap: wrap; gap: 6px; padding-left: 30px; align-items: center; }
+.chip { border: 1px solid var(--line); background: none; border-radius: 999px; font-size: 14px; font-weight: 500; padding: 0 14px; min-height: 34px; color: var(--fg); transition: background .2s, border-color .2s, color .2s; }
+.chip[aria-pressed="true"] { background: var(--fg); border-color: var(--fg); color: var(--bg); }
+.chip[data-feel="tech"][aria-pressed="true"] { background: var(--bad); border-color: var(--bad); color: #fff; }
+.set-x .chip { font-size: 13px; padding: 0 11px; min-height: 32px; }
+.set-note { width: 100%; }
+.txt { width: 100%; min-height: 48px; border-radius: 14px; border: 0; background: var(--fill); padding: 12px 14px; font-size: 16px; -webkit-appearance: none; appearance: none; }
+.txt:focus { outline: none; box-shadow: inset 0 0 0 2px var(--accent); }
+textarea.txt { min-height: 80px; resize: vertical; }
+.ex-a { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.ex-a .btn.sm { background: none; border: 1px solid var(--line); }
+.ex-a .btn.sm:hover { background: var(--fill); }
+.wk-foot { margin-top: 32px; display: grid; gap: 10px; }
+
+/* Rest timer */
+#rest { position: fixed; left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); z-index: 40; padding: 12px 12px 12px 22px; background: var(--fg); color: var(--bg); border-radius: 26px; box-shadow: 0 18px 50px rgba(0, 0, 0, .25); max-width: 620px; margin: 0 auto; overflow: hidden; animation: rise .4s var(--ease); }
+#rest .in { display: flex; align-items: center; gap: 8px; }
+#rest .clock { font-family: var(--f-display); font-size: 36px; font-weight: 600; font-variant-numeric: tabular-nums; min-width: 92px; letter-spacing: -.04em; }
+#rest .lbl { font-size: 12px; opacity: .7; margin-top: 3px; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#rest .cl { display: grid; flex: 1; min-width: 0; }
+#rest .clock { line-height: 1; }
+#rest .bar { position: absolute; left: 0; bottom: 0; height: 3px; background: var(--accent); transition: width 1s linear; }
+#rest .btn.sm { padding: 0 11px; min-height: 40px; background: color-mix(in srgb, var(--bg) 14%, transparent); color: var(--bg); }
+#rest.over .clock { color: var(--accent); }
+
+/* Sheets */
+.scrim { position: fixed; inset: 0; z-index: 60; background: rgba(0, 0, 0, .38); display: flex; align-items: flex-end; justify-content: center; animation: fade .25s; }
+.sheet { position: relative; width: 100%; max-width: 560px; max-height: 88vh; overflow: auto; background: var(--surface); border-radius: 26px 26px 0 0; padding: 30px max(22px, env(safe-area-inset-right, 0px)) calc(22px + env(safe-area-inset-bottom, 0px)) max(22px, env(safe-area-inset-left, 0px)); display: grid; gap: 16px; animation: up .45s var(--ease); }
+.sheet::before { content: ""; position: absolute; top: 9px; left: 50%; width: 36px; height: 5px; margin-left: -18px; border-radius: 3px; background: var(--fill-2); }
+@media (min-width: 640px) { .scrim { align-items: center; } .sheet { border-radius: 26px; } .sheet::before { display: none; } }
+.sheet h2 { font-size: 30px; letter-spacing: -.035em; }
+.sheet .eyebrow { padding: 0; }
+@keyframes fade { from { opacity: 0; } }
+@keyframes up { from { transform: translateY(48px); opacity: .4; } }
+#toast { position: fixed; left: 50%; bottom: calc(104px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 70; background: var(--fg); color: var(--bg); padding: 12px 20px; border-radius: 999px; font-size: 14px; font-weight: 500; max-width: calc(100% - 40px); box-shadow: 0 12px 40px rgba(0, 0, 0, .22); text-align: center; animation: rise .35s var(--ease); }
+
+label.f { display: grid; gap: 6px; font-size: 13px; font-weight: 500; color: var(--muted); }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.seg { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+.seg::-webkit-scrollbar { display: none; }
+.seg .chip { flex: none; }
+.banner { padding: 14px 0 0; font-size: 14px; color: var(--fg); border-top: 2px solid var(--warn); }
+.quick { display: flex; gap: 28px; flex-wrap: wrap; }
+
+/* Routine editor */
+.it { display: grid; gap: 12px; padding: 18px 0; border-bottom: 1px solid var(--line); }
+.it-top { display: flex; align-items: center; gap: 8px; }
+.it-top .t { flex: 1; min-width: 0; font-weight: 600; font-size: 17px; letter-spacing: -.015em; }
+.it-ctl { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.it-ctl label { font-size: 11px; color: var(--faint); display: grid; gap: 4px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+.it-ctl .num { height: 44px; font-size: 18px; }
+.mini { min-width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--line); background: none; display: inline-grid; place-items: center; color: var(--fg); font-size: 14px; transition: background .2s; }
+.mini:hover { background: var(--fill); }
+.mini:disabled { opacity: .25; }
+
+.tbl-wrap { overflow-x: auto; }
+table.tbl { width: 100%; border-collapse: collapse; font-size: 15px; font-variant-numeric: tabular-nums; }
+.tbl th { text-align: left; font-weight: 600; color: var(--faint); font-size: 11px; letter-spacing: .07em; text-transform: uppercase; padding: 8px 10px 8px 0; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.tbl td { padding: 11px 10px 11px 0; border-bottom: 1px solid var(--hair); vertical-align: top; }
+.tbl tr:last-child td { border-bottom: 0; }
+.tbl td.r, .tbl th.r { text-align: right; padding-right: 18px; }
+.tbl td:last-child, .tbl th:last-child { padding-right: 0; }
+.tbl .mono { font-family: var(--f-display); }
+
+.chart { position: relative; min-height: 210px; }
+.chart svg { display: block; width: 100%; overflow: visible; }
+.chart .tip { position: absolute; top: -6px; pointer-events: none; background: var(--fg); color: var(--bg); border-radius: 12px; padding: 7px 11px; font-size: 12.5px; white-space: nowrap; transform: translateX(-50%); z-index: 2; box-shadow: 0 8px 24px rgba(0, 0, 0, .18); }
+.chart .tip .muted { color: inherit; opacity: .65; }
+.chart .tip b { font-family: var(--f-display); font-weight: 600; font-variant-numeric: tabular-nums; }
+.legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 7px; }
+.legend i { width: 16px; height: 2px; border-radius: 2px; background: var(--lc); display: inline-block; }
+.legend i.dot { width: 8px; height: 8px; border-radius: 50%; }
+.ax { fill: var(--faint); font: 500 11px var(--f-display); font-variant-numeric: tabular-nums; }
+.grid-l { stroke: var(--hair); stroke-width: 1; }
+.chart-h { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.chart-h .big { font-size: 34px; font-weight: 600; letter-spacing: -.04em; line-height: 1; }
+.chart-h .big small { font-size: 14px; color: var(--muted); font-weight: 500; margin-left: 3px; }
+
+@media (min-width: 760px) {
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .hero.split { grid-template-columns: 1.3fr 1fr; align-items: end; column-gap: 48px; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before { animation: none !important; transition: none !important; } }
+</style>
+
+<div id="app"><header class="hero"><h1 class="display">Carregant<span class="dot">.</span></h1></header></div>
+<div class="tabs" id="tabs"></div>
+<div id="rest" hidden></div>
+<div id="sheet"></div>
+<div id="toast" hidden></div>
+
+<script>
+'use strict';
+/* ============================================================
+   Personal Gym Tracker
+   Data lives in the artifact database (collections: exercises,
+   routines, sessions, config). localStorage keeps an offline
+   mirror and the list of unsynced writes; it is the store only
+   when the database is not available in this view.
+   ============================================================ */
+const COLLS = ['exercises', 'routines', 'sessions', 'config'];
+const LS = { mirror: 'pgt.mirror.v1', pending: 'pgt.pending.v1', local: 'pgt.localdb.v1', ui: 'pgt.ui.v1' };
+const PLATES = [['red', 'Vermell'], ['blue', 'Blau'], ['yellow', 'Groc'], ['green', 'Verd'], ['white', 'Blanc']];
+const FEELS = [['easy', 'Fàcil'], ['normal', 'Normal'], ['hard', 'Difícil'], ['tech', 'Tècnica compromesa']];
+const FEEL_LABEL = Object.fromEntries(FEELS);
+
+const S = { exercises: {}, routines: {}, sessions: {}, config: {}, mode: 'loading', ready: false, cloudConfirmed: false, rev: 0 };
+let backend = null, downloads = null;
+let view = { name: 'home', p: {} };
+const viewStack = [];
+
+/* ---------- helpers ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const clone = o => JSON.parse(JSON.stringify(o));
+const now = () => Date.now();
+const uid = p => p + '-' + now().toString(36) + Math.random().toString(36).slice(2, 7);
+const lsGet = (k, d) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } };
+const lsSet = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch { return false; } };
+const num = v => { if (v === null || v === undefined || v === '') return null; const n = parseFloat(String(v).replace(',', '.')); return Number.isFinite(n) ? n : null; };
+const fmtN = (n, d = 1) => n == null ? '—' : (Math.round(n * 10 ** d) / 10 ** d).toLocaleString('ca-ES', { maximumFractionDigits: d });
+const fmtKg = n => n == null ? '—' : fmtN(n, 2);
+const fmtVol = n => Math.round(n || 0).toLocaleString('ca-ES');
+const dFmt = (t, o) => new Date(t).toLocaleDateString('ca-ES', o);
+const dShort = t => dFmt(t, { day: 'numeric', month: 'short' });
+const dLong = t => dFmt(t, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+const tFmt = t => new Date(t).toLocaleTimeString('ca-ES', { hour: '2-digit', minute: '2-digit' });
+const dur = ms => { if (!ms || ms < 0) return '—'; const m = Math.round(ms / 60000); return m < 60 ? m + ' min' : Math.floor(m / 60) + ' h ' + String(m % 60).padStart(2, '0'); };
+const ago = t => { const d = Math.floor((startOfDay(now()) - startOfDay(t)) / 864e5); return d <= 0 ? 'avui' : d === 1 ? 'ahir' : 'fa ' + d + ' dies'; };
+function startOfDay(t) { const d = new Date(t); d.setHours(0, 0, 0, 0); return d.getTime(); }
+const settings = () => Object.assign({ restDefault: 90, increment: 2.5 }, S.config.settings || {});
+
+const ICON = {
+  check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  back: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4.5L7.5 12l7.5 7.5"/></svg>',
+  home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2.5" y="9" width="3" height="6" rx="1"/><rect x="18.5" y="9" width="3" height="6" rx="1"/><rect x="5.5" y="6.5" width="3" height="11" rx="1"/><rect x="15.5" y="6.5" width="3" height="11" rx="1"/><path d="M8.5 12h7"/></svg>',
+  hist: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>',
+  stats: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18l6-6 4 3 8-9"/></svg>',
+  edit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>',
+};
+
+/* ---------- persistence ---------- */
+const Local = {
+  read() { return lsGet(LS.local, {}); },
+  async set(c, id, data) { const d = this.read(); (d[c] ||= {})[id] = data; if (!lsSet(LS.local, d)) throw { code: 'quota_exceeded', message: 'L’emmagatzematge del navegador és ple' }; },
+  async del(c, id) { const d = this.read(); if (d[c]) delete d[c][id]; lsSet(LS.local, d); },
+  load() { const d = this.read(); for (const c of COLLS) S[c] = d[c] || {}; },
+};
+const Cloud = {
+  db: null,
+  set(c, id, data) { return this.db.collection(c).doc(id).set(data); },
+  del(c, id) { return this.db.collection(c).doc(id).delete(); },
+  subscribe() {
+    const loaded = {};
+    const sub = c => {
+      this.db.collection(c).onSnapshot(snap => {
+        applyRemote(c, snap);
+        loaded[c] = true;
+        if (!snap.metadata.fromCache) { S.confirmed = S.confirmed || {}; S.confirmed[c] = true; }
+        if (COLLS.every(k => loaded[k])) S.ready = true;
+        if (COLLS.every(k => S.confirmed && S.confirmed[k])) { S.cloudConfirmed = true; S.offlineNote = false; }
+        dataChanged();
+      }, err => {
+        S.offlineNote = true; dataChanged();
+        if (!err || err.code === 'unavailable') setTimeout(() => sub(c), 5000 + Math.random() * 3000);
+      });
+    };
+    COLLS.forEach(sub);
+  },
+};
+function applyRemote(c, snap) {
+  const seen = new Set();
+  for (const d of snap.docs) {
+    seen.add(d.id);
+    const key = c + '/' + d.id;
+    if (pending.has(key)) continue;
+    const inc = clone(d.data());
+    const loc = S[c][d.id];
+    if (loc && (loc.updatedAt || 0) > (inc.updatedAt || 0)) continue;
+    S[c][d.id] = inc;
+  }
+  if (!snap.metadata.fromCache) {
+    for (const id of Object.keys(S[c])) if (!seen.has(id) && !pending.has(c + '/' + id)) delete S[c][id];
+  }
+}
+
+const pending = new Map();
+function savePendingList() { lsSet(LS.pending, Array.from(pending.keys())); }
+function persist(c, id, delay = 450) {
+  const key = c + '/' + id;
+  let p = pending.get(key);
+  if (!p) { p = { fails: 0 }; pending.set(key, p); savePendingList(); }
+  clearTimeout(p.timer);
+  p.timer = setTimeout(() => flush(c, id), delay);
+  scheduleMirror(); updateSync();
+}
+function put(c, id, data, delay) { data.updatedAt = now(); S[c][id] = data; persist(c, id, delay); }
+function remove(c, id) { delete S[c][id]; persist(c, id, 0); }
+async function flush(c, id) {
+  const key = c + '/' + id, p = pending.get(key);
+  if (!p) return;
+  p.timer = null;
+  if (!backend) { p.timer = setTimeout(() => flush(c, id), 1000); return; }
+  if (p.inflight) { p.dirty = true; return; }
+  p.inflight = true; p.dirty = false;
+  const data = S[c][id] ? clone(S[c][id]) : null;
+  try {
+    if (data) await backend.set(c, id, data); else await backend.del(c, id);
+    p.fails = 0; S.lastSaved = now(); S.lastError = null;
+  } catch (e) {
+    p.inflight = false; p.fails++; S.lastError = e || { code: 'unavailable' };
+    const code = e && e.code;
+    if (code === 'invalid_argument' || code === 'quota_exceeded' || code === 'transform_error') {
+      toast('No s’ha pogut desar: ' + (e.message || code) + '. Les dades es mantenen en aquest dispositiu.');
+    } else {
+      p.timer = setTimeout(() => flush(c, id), Math.min(30000, 1500 * 2 ** p.fails) + Math.random() * 500);
+    }
+    updateSync(); return;
+  }
+  p.inflight = false;
+  if (p.dirty) return flush(c, id);
+  if (p.timer) return;
+  pending.delete(key); savePendingList(); scheduleMirror(); updateSync();
+}
+let mirrorT = null;
+function scheduleMirror() { clearTimeout(mirrorT); mirrorT = setTimeout(writeMirror, 700); }
+function writeMirror() {
+  if (S.mode !== 'cloud') return;
+  const sess = Object.values(S.sessions).sort((a, b) => b.startedAt - a.startedAt);
+  const keep = {};
+  sess.slice(0, 60).forEach(s => keep[s.id] = s);
+  sess.forEach(s => { if (pending.has('sessions/' + s.id) || s.status === 'active') keep[s.id] = s; });
+  const m = { exercises: S.exercises, routines: S.routines, config: S.config, sessions: keep, savedAt: now(), uid: Supa.uid || null };
+  if (!lsSet(LS.mirror, m)) { m.sessions = Object.fromEntries(Object.entries(keep).filter(([k, s]) => s.status === 'active' || pending.has('sessions/' + k))); lsSet(LS.mirror, m); }
+}
+function updateSync() {
+  const el = $('#sync'); if (!el) return;
+  const [s, t] = syncState(); el.dataset.s = s; el.querySelector('b').textContent = t;
+}
+function syncState() {
+  if (S.mode === 'local') return ['local', 'Només aquest navegador'];
+  if (S.mode === 'loading') return ['saving', 'Connectant…'];
+  if (S.mode === 'auth') return ['local', 'Sense sessió'];
+  const n = pending.size;
+  if (n && S.lastError) return ['error', n + ' canvis sense desar'];
+  if (n) return ['saving', 'Desant…'];
+  if (S.offlineNote && !S.cloudConfirmed) return ['offline', 'Sense connexió'];
+  return ['ok', 'Desat al núvol'];
+}
+
+/* Supabase backend (used by the standalone PWA build, which defines window.PGT_SUPA) */
+const Supa = {
+  client: null, uid: null, chan: null, fetching: null, again: false,
+  err(e) { const m = (e && e.message) || String(e); return { code: /fetch|network|timeout|Load failed/i.test(m) ? 'unavailable' : (e && e.code === '42501' ? 'invalid_argument' : 'unavailable'), message: m }; },
+  async set(c, id, data) { const { error } = await this.client.from('docs').upsert({ user_id: this.uid, coll: c, id, data, updated_at: new Date().toISOString() }); if (error) throw this.err(error); },
+  async del(c, id) { const { error } = await this.client.from('docs').delete().match({ user_id: this.uid, coll: c, id }); if (error) throw this.err(error); },
+  async fetchAll() {
+    if (this.fetching) { this.again = true; return this.fetching; }
+    this.fetching = (async () => {
+      const rows = [];
+      for (let from = 0; ; from += 1000) {
+        const { data, error } = await this.client.from('docs').select('coll,id,data').eq('user_id', this.uid).range(from, from + 999);
+        if (error) throw this.err(error);
+        rows.push(...data); if (data.length < 1000) break;
+      }
+      const by = {}; rows.forEach(r => (by[r.coll] ||= []).push(r));
+      for (const c of COLLS) applyRemote(c, { docs: (by[c] || []).map(r => ({ id: r.id, data: () => r.data })), metadata: { fromCache: false } });
+      S.ready = true; S.cloudConfirmed = true; S.offlineNote = false; dataChanged();
+    })();
+    try { await this.fetching; } catch (e) { S.offlineNote = true; S.ready = true; dataChanged(); }
+    finally { this.fetching = null; if (this.again) { this.again = false; setTimeout(() => this.fetchAll(), 300); } }
+  },
+  subscribe() {
+    this.fetchAll();
+    let t; const soon = () => { clearTimeout(t); t = setTimeout(() => this.fetchAll(), 700); };
+    try { this.chan = this.client.channel('docs-' + this.uid).on('postgres_changes', { event: '*', schema: 'public', table: 'docs', filter: 'user_id=eq.' + this.uid }, soon).subscribe(); } catch {}
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') this.fetchAll(); });
+    window.addEventListener('online', () => { this.fetchAll(); for (const key of pending.keys()) { const [c, id] = key.split('/'); persist(c, id, 50); } });
+    setInterval(() => { if (document.visibilityState === 'visible') this.fetchAll(); }, 60000);
+  },
+};
+async function bootSupa() {
+  const cfg = window.PGT_SUPA;
+  try { Supa.client = window.supabase.createClient(cfg.url, cfg.key, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false } }); }
+  catch (e) { S.ready = true; S.mode = 'local'; backend = Local; Local.load(); render(); toast('No s’ha pogut iniciar la connexió amb Supabase.'); return; }
+  let session = null;
+  try { session = (await Supa.client.auth.getSession()).data.session; } catch {}
+  if (!session) { S.mode = 'auth'; S.ready = true; view = { name: 'login', p: {} }; render(); return; }
+  startSupa(session);
+}
+function startSupa(session) {
+  Supa.uid = session.user.id; S.userEmail = session.user.email;
+  const mirror = lsGet(LS.mirror, null), pend = lsGet(LS.pending, []);
+  const mine = mirror && mirror.uid === Supa.uid;
+  if (mine) { for (const c of COLLS) S[c] = mirror[c] || {}; S.fromMirror = true; }
+  backend = Supa; S.mode = 'cloud'; S.ready = !!mine;
+  if (mine) for (const key of pend) { const [c, id] = key.split('/'); if (COLLS.includes(c)) persist(c, id, 50); }
+  view = { name: 'home', p: {} }; render();
+  Supa.subscribe();
+}
+async function boot() {
+  if (window.PGT_SUPA) return bootSupa();
+  const mirror = lsGet(LS.mirror, null);
+  const pend = lsGet(LS.pending, []);
+  const hasClaude = !!(window.claude && typeof window.claude.use === 'function');
+  if (hasClaude && mirror) {
+    for (const c of COLLS) S[c] = mirror[c] || {};
+    S.ready = true; S.fromMirror = true; render();
+  }
+  let db = null;
+  if (hasClaude) {
+    try { db = await window.claude.use('db'); } catch { db = null; }
+    window.claude.use('downloads').then(d => { downloads = d; }).catch(() => {});
+  }
+  if (db) {
+    Cloud.db = db; backend = Cloud; S.mode = 'cloud';
+    if (mirror) for (const key of pend) { const [c, id] = key.split('/'); if (COLLS.includes(c)) persist(c, id, 50); }
+    Cloud.subscribe();
+    setTimeout(() => { if (!S.cloudConfirmed) { S.offlineNote = true; S.ready = true; dataChanged(); } }, 10000);
+  } else {
+    backend = Local; S.mode = 'local'; Local.load(); S.ready = true;
+  }
+  render();
+}
+
+/* ---------- derived data ---------- */
+let D = null, Drev = -1;
+function derived() {
+  if (D && Drev === S.rev) return D;
+  const sessions = Object.values(S.sessions).filter(s => s && s.startedAt).sort((a, b) => a.startedAt - b.startedAt);
+  const finished = sessions.filter(s => s.status === 'finished');
+  const exHist = {};
+  for (const s of finished) {
+    (s.exercises || []).forEach(e => {
+      const done = (e.sets || []).filter(isDone);
+      if (!done.length) return;
+      const vol = done.reduce((a, x) => a + (num(x.weight) || 0) * x.reps, 0);
+      const maxW = Math.max(...done.map(x => num(x.weight) || 0));
+      (exHist[e.exerciseId] ||= []).push({ sessionId: s.id, t: s.startedAt, routineId: s.routineId, routineName: s.routineName, color: s.color, sets: done, allSets: e.sets, vol, maxW, reps: done.reduce((a, x) => a + x.reps, 0), plan: { sets: e.planSets, repMin: e.repMin, repMax: e.repMax }, notes: e.notes });
+    });
+  }
+  D = { sessions, finished, exHist, active: sessions.filter(s => s.status === 'active').sort((a, b) => b.startedAt - a.startedAt)[0] || null };
+  Drev = S.rev;
+  return D;
+}
+function isDone(x) { return x && x.status === 'done' && Number.isFinite(x.reps) && x.reps > 0; }
+function sessionStats(s) {
+  let sets = 0, done = 0, vol = 0, exDone = 0;
+  (s.exercises || []).forEach(e => {
+    let any = false;
+    (e.sets || []).forEach(x => { sets++; if (isDone(x)) { done++; any = true; vol += (num(x.weight) || 0) * x.reps; } });
+    if (any) exDone++;
+  });
+  return { sets, done, vol, exDone, exTotal: (s.exercises || []).length, dur: (s.endedAt || now()) - s.startedAt };
+}
+function lastFor(exId, beforeT = Infinity, excludeSession) {
+  const h = derived().exHist[exId] || [];
+  for (let i = h.length - 1; i >= 0; i--) if (h[i].t < beforeT && h[i].sessionId !== excludeSession) return h[i];
+  return null;
+}
+function routinesUsing(exId) { return sortedRoutines().filter(r => (r.items || []).some(i => i.exerciseId === exId)); }
+function sortedRoutines() { return Object.values(S.routines).sort((a, b) => (a.order ?? 99) - (b.order ?? 99) || a.name.localeCompare(b.name)); }
+function exName(id, fallback) { return (S.exercises[id] && S.exercises[id].name) || fallback || id; }
+function setsLine(sets) { return sets.map(x => (x.weight == null || x.weight === '' ? '—' : fmtKg(num(x.weight))) + '×' + x.reps).join(' · '); }
+
+/* Conservative progression advice from one real performance.
+   Suggests more weight only after every planned set reached the top of the rep range
+   and no set was marked hard or technically compromised. */
+function advise(entry, plan) {
+  if (!entry) return { cls: '', text: 'Sense historial. Tria un pes de prova i registra la primera sessió.' };
+  const inc = settings().increment;
+  const p = { sets: plan?.sets || entry.plan?.sets || 3, repMin: plan?.repMin ?? entry.plan?.repMin ?? 5, repMax: plan?.repMax ?? entry.plan?.repMax ?? 10 };
+  const s = entry.sets, w = entry.maxW;
+  const atW = s.filter(x => (num(x.weight) || 0) === w);
+  const feels = s.map(x => x.feel);
+  if (feels.includes('tech')) return { cls: 'down', text: `Mantén ${fmtKg(w)} kg: hi va haver sèries amb tècnica compromesa.` };
+  if (s.length < p.sets) return { cls: '', text: `Mantén ${fmtKg(w)} kg: l’última vegada vas completar ${s.length} de ${p.sets} sèries.` };
+  if (s.some(x => x.reps < p.repMin)) return { cls: 'down', text: `Alguna sèrie va quedar per sota de ${p.repMin} reps. Mantén o redueix el pes.` };
+  const top = atW.length >= p.sets && atW.every(x => x.reps >= p.repMax);
+  if (top && w > 0) {
+    if (feels.includes('hard')) return { cls: '', text: `Vas arribar a ${p.repMax} reps però marcant-ho com a difícil. Repeteix ${fmtKg(w)} kg.` };
+    if (feels.every(f => f === 'easy' || f === 'normal')) return { cls: 'up', text: `Totes les sèries a ${p.repMax} reps amb bones sensacions. Pots provar ${fmtKg(w + inc)} kg.` };
+    return { cls: 'maybe', text: `Vas arribar a ${p.repMax} reps a totes les sèries. Si la tècnica va ser bona, prova ${fmtKg(w + inc)} kg.` };
+  }
+  return { cls: '', text: `Mantén ${fmtKg(w)} kg i intenta sumar repeticions fins a ${p.repMax} a totes les sèries.` };
+}
+
+/* ---------- rendering core ---------- */
+const app = $('#app');
+let renderDeferred = false;
+function dataChanged() { S.rev++; if (isEditing()) { renderDeferred = true; updateSync(); return; } render(true); }
+function isEditing() { const a = document.activeElement; return a && app.contains(a) && a.matches('input, textarea, select'); }
+document.addEventListener('focusout', () => setTimeout(() => { if (renderDeferred && !isEditing()) { renderDeferred = false; render(true); } }, 50));
+
+function go(name, p = {}, { push = true } = {}) {
+  if (push && view.name !== name) viewStack.push(view);
+  view = { name, p };
+  render(); window.scrollTo(0, 0);
+}
+function back(fallback = 'home') { const v = viewStack.pop(); view = v || { name: fallback, p: {} }; render(); window.scrollTo(0, 0); }
+function tab(name) { viewStack.length = 0; view = { name, p: {} }; render(); window.scrollTo(0, 0); }
+
+function syncChip() { const [s, t] = syncState(); return `<span class="sync" id="sync" data-s="${s}"><i></i><b>${esc(t)}</b></span>`; }
+function pageHead(kicker, title, lede = '') {
+  return `<header class="hero rv"><div class="hero-top"><span class="kicker">${esc(kicker || '')}</span>${syncChip()}</div><h1 class="display md">${esc(title)}<span class="dot">.</span></h1>${lede ? `<p class="lede">${lede}</p>` : ''}</header>`;
+}
+function topbar(title, { backBtn = true, right = '', kicker = '' } = {}) {
+  if (!backBtn && !right) return pageHead(kicker, title);
+  return `<div class="top"><div class="lft">${backBtn ? `<button class="icon-btn" data-action="back" aria-label="Enrere">${ICON.back}<span>Enrere</span></button>` : ''}</div><h1>${esc(title)}</h1><div class="rgt">${right}${syncChip()}</div></div>`;
+}
+let enterNext = true;
+function render(soft) {
+  const y = window.scrollY;
+  const fn = VIEWS[view.name] || VIEWS.home;
+  let html;
+  if (!S.ready) html = `<header class="hero"><div class="hero-top"><span class="brand">Personal Gym Tracker</span></div><h1 class="display">Carregant<span class="dot">.</span></h1><p class="lede">Recuperant les teves rutines i sessions.</p></header>`;
+  else html = fn(view.p);
+  app.classList.toggle('enter', !soft);
+  app.innerHTML = html;
+  renderTabs();
+  drawCharts();
+  if (soft) window.scrollTo(0, y);
+}
+function renderTabs() {
+  const t = $('#tabs');
+  const hide = view.name === 'workout' || view.name === 'login';
+  t.hidden = hide;
+  if (hide) return;
+  const cur = { home: 'home', routine: 'home', summary: 'home', history: 'history', session: 'history', stats: 'stats', exercise: 'stats', manage: 'manage', redit: 'manage', data: 'manage' }[view.name] || 'home';
+  const b = (n, l) => `<button data-action="tab" data-tab="${n}" ${cur === n ? 'aria-current="page"' : ''}>${l}</button>`;
+  t.innerHTML = `<nav>${b('home', 'Avui')}${b('history', 'Historial')}${b('stats', 'Progrés')}${b('manage', 'Rutines')}</nav>`;
+}
+function modeBanner() {
+  if (S.mode === 'local') return `<div class="banner">Aquesta vista no té accés a la base de dades al núvol. Les dades es guarden només en aquest navegador i no se sincronitzen. Obre l’app des de claude.ai per desar-les al núvol, i fes còpies de seguretat des de Rutines → Dades.</div>`;
+  if (S.offlineNote && !S.cloudConfirmed) return `<div class="banner">No es pot connectar amb la base de dades. Estàs veient la còpia guardada en aquest dispositiu; els canvis nous es desaran quan torni la connexió.</div>`;
+  return '';
+}
+const fig = (v, unit, l) => `<div class="fig"><span class="big">${v}${unit ? `<small>${unit}</small>` : ''}</span><span class="l">${l}</span></div>`;
+function suggestedRoutine() {
+  const d = derived(); let next = null, oldest = Infinity;
+  sortedRoutines().forEach(r => { if (!(r.items || []).length) return; const l = d.finished.filter(s => s.routineId === r.id).pop(); const t = l ? l.startedAt : -1; if (t < oldest) { oldest = t; next = r; } });
+  return next;
+}
+
+/* ---------- views ---------- */
+const VIEWS = {};
+
+VIEWS.home = () => {
+  const d = derived(), rs = sortedRoutines();
+  const last = d.finished[d.finished.length - 1];
+  const next = suggestedRoutine();
+  const today = dFmt(now(), { weekday: 'long', day: 'numeric', month: 'long' });
+  let h = `<header class="hero"><div class="hero-top rv"><span class="brand">Personal Gym Tracker</span>${syncChip()}</div>`;
+  if (d.active) {
+    const st = sessionStats(d.active);
+    h += `<span class="kicker rv">${esc(today)} · En curs des de fa ${dur(now() - d.active.startedAt)}</span>
+      <h1 class="display rv">${esc(d.active.routineName)}<span class="dot">.</span></h1>
+      <p class="lede rv"><b>${st.done} de ${st.sets} sèries</b> completades · ${fmtVol(st.vol)} kg de volum fins ara.</p>
+      <div class="rv" style="max-width:420px"><div class="progress"><i style="width:${st.sets ? st.done / st.sets * 100 : 0}%"></i></div></div>
+      <div class="cta rv"><button class="btn primary" data-action="open-workout">Continuar entrenament</button></div>`;
+  } else if (next) {
+    const lastR = d.finished.filter(s => s.routineId === next.id).pop();
+    h += `<span class="kicker rv">${esc(today)}</span>
+      <h1 class="display rv"><span class="soft">Avui toca</span><br>${esc(next.name)}<span class="dot">.</span></h1>
+      <p class="lede rv">${(next.items || []).length} exercicis. ${lastR ? `L’última vegada la vas fer ${esc(ago(lastR.startedAt))}.` : 'Encara no l’has registrada mai.'}</p>
+      <div class="cta rv"><button class="btn primary" data-action="start-picker">Començar entrenament</button><button class="link" data-action="open-routine" data-id="${esc(next.id)}">Veure ${esc(next.name)}</button></div>`;
+  } else {
+    h += `<span class="kicker rv">${esc(today)}</span><h1 class="display rv">Comencem<span class="dot">.</span></h1><p class="lede rv">Crea una rutina o restaura una còpia de seguretat per començar a registrar.</p>
+      <div class="cta rv"><button class="btn primary" data-action="tab" data-tab="manage">Configurar rutines</button></div>`;
+  }
+  h += `</header>`;
+  h += modeBanner() ? `<div class="section tight rv">${modeBanner()}</div>` : '';
+  const t30 = now() - 30 * 864e5, l30 = d.finished.filter(s => s.startedAt >= t30);
+  const st30 = l30.reduce((a, s) => { const x = sessionStats(s); a.v += x.vol; a.s += x.done; return a; }, { v: 0, s: 0 });
+  h += `<div class="section tight rv"><span class="kicker">Últims 30 dies</span><div class="figures">${fig(l30.length, '', 'Sessions')}${fig(st30.s, '', 'Sèries')}${fig(fmtVol(st30.v), 'kg', 'Volum')}</div></div>`;
+  h += `<div class="section rv"><header><h2>Rutines<span class="dot">.</span></h2><button class="link" data-action="tab" data-tab="manage">Editar</button></header>`;
+  if (!rs.length) h += `<div class="empty"><b>Encara no hi ha rutines</b><span>Crea-les a Rutines o restaura una còpia de seguretat des de Rutines → Dades.</span></div>`;
+  else h += `<div class="routines">${rs.map(r => routineCard(r)).join('')}</div>`;
+  h += `</div><div class="section rv"><header><h2>Última sessió<span class="dot">.</span></h2>${last ? `<button class="link" data-action="tab" data-tab="history">Historial</button>` : ''}</header>`;
+  if (!last) h += `<div class="empty"><b>Cap sessió registrada</b><span>Quan finalitzis el primer entrenament, en veuràs el resum aquí.</span></div>`;
+  else h += sessionSummaryPanel(last);
+  h += `</div><div class="section tight rv"><div class="quick"><button class="link" data-action="tab" data-tab="stats">Estadístiques</button><button class="link" data-action="go" data-view="data">Còpia de seguretat i dades</button></div></div>`;
+  return h;
+};
+function routineCard(r, extra = '') {
+  const h = derived().finished.filter(s => s.routineId === r.id);
+  const last = h[h.length - 1];
+  return `<button class="rcard ${extra}" data-c="${esc(r.color)}" data-action="open-routine" data-id="${esc(r.id)}">
+    <span class="letter">${esc(r.letter || r.name.slice(0, 1))}</span><span class="rmain"><span class="name">${esc(r.name)}</span>
+    <span class="meta">${(r.items || []).length} exercicis · ${last ? esc(ago(last.startedAt)) : 'sense sessions'}</span></span><span class="go">→</span></button>`;
+}
+function sessionSummaryPanel(s) {
+  const st = sessionStats(s);
+  return `<button class="panel tap feature" data-c="${esc(s.color)}" data-action="open-session" data-id="${esc(s.id)}">
+    <div class="row"><span class="sub-h grow">${esc(s.routineName)}</span><span class="muted" style="font-size:14px">${esc(dFmt(s.startedAt, { weekday: 'long', day: 'numeric', month: 'long' }))}</span></div>
+    <div class="big">${fmtVol(st.vol)}<small>kg de volum</small></div>
+    <div class="kpis">${kpi(st.done + '/' + st.sets, '', 'Sèries')}${kpi(st.exDone + '/' + st.exTotal, '', 'Exercicis')}${kpi(dur(s.endedAt - s.startedAt), '', 'Durada')}</div></button>`;
+}
+const kpi = (v, unit, l) => `<div class="kpi"><div class="v">${v}${unit ? `<small>${unit}</small>` : ''}</div><div class="l">${l}</div></div>`;
+
+/* Routine preview */
+VIEWS.routine = ({ id }) => {
+  const r = S.routines[id];
+  if (!r) return topbar('Rutina') + `<div class="empty" style="margin-top:20px"><b>Aquesta rutina ja no existeix</b></div>`;
+  const items = r.items || [];
+  const shared = items.filter(it => routinesUsing(it.exerciseId).length > 1).length;
+  let h = topbar(r.name);
+  h += `<header class="hero" data-c="${esc(r.color)}"><span class="kicker rv">Rutina ${esc(r.letter || '')} · ${items.length} exercicis</span><h1 class="display rv">${esc(r.name)}<span class="dot">.</span></h1>
+    <p class="lede rv">${items.length ? `${items[0].sets} sèries de ${items[0].repMin} a ${items[0].repMax} repeticions per exercici${shared ? `. ${shared} exercicis comparteixen progressió amb altres rutines.` : '.'}` : 'Encara no té exercicis.'}</p>
+    <div class="cta rv"><button class="btn primary" data-action="start" data-id="${esc(r.id)}" ${items.length ? '' : 'disabled'}>Començar ${esc(r.name)}</button></div></header>`;
+  if (!items.length) h += `<div class="section"><div class="empty"><b>Aquesta rutina no té exercicis</b><span>Afegeix-ne des de Rutines.</span></div></div>`;
+  else h += `<div class="section tight rv"><div class="list">` + items.map((it, i) => {
+    const last = lastFor(it.exerciseId), a = advise(last, it);
+    return `<div class="li" style="align-items:flex-start"><span class="num-idx">${String(i + 1).padStart(2, '0')}</span>
+      <div class="main" style="display:grid;gap:4px"><div class="t">${esc(exName(it.exerciseId))}</div>
+      <div class="s">${it.sets} × ${it.repMin}–${it.repMax}${last ? ` · última ${esc(dShort(last.t))}${last.routineId !== r.id ? ' a ' + esc(last.routineName) : ''}` : ' · pes pendent de la primera sessió'}</div>
+      ${last ? `<div class="ref"><span class="sets">${esc(setsLine(last.sets))}</span></div><div class="rec ${a.cls}">${esc(a.text)}</div>` : ''}</div></div>`;
+  }).join('') + `</div></div>`;
+  h += `<div class="wk-foot narrow" data-c="${esc(r.color)}"><button class="btn primary plate block" data-action="start" data-id="${esc(r.id)}" ${items.length ? '' : 'disabled'}>Començar ${esc(r.name)}</button></div>`;
+  return h;
+};
+
+/* Start a session: plan copied from the routine; weights pre-filled from the last real performance, reps empty */
+function startSession(routineId) {
+  const r = S.routines[routineId]; if (!r) return;
+  const t = now();
+  const s = {
+    id: uid('s'), routineId: r.id, routineName: r.name, color: r.color, status: 'active', startedAt: t, endedAt: null, notes: '',
+    exercises: (r.items || []).map(it => {
+      const last = lastFor(it.exerciseId);
+      const sets = [];
+      for (let i = 0; i < (it.sets || 3); i++) {
+        const ref = last ? (last.allSets[i] && isDone(last.allSets[i]) ? last.allSets[i] : last.sets[last.sets.length - 1]) : null;
+        sets.push(newSet(i + 1, ref ? num(ref.weight) : null));
+      }
+      return { exerciseId: it.exerciseId, name: exName(it.exerciseId), planSets: it.sets || 3, repMin: it.repMin ?? 5, repMax: it.repMax ?? 10, rest: it.rest ?? null, notes: '', sets };
+    }),
+  };
+  put('sessions', s.id, s, 0);
+  S.rev++;
+  requestWakeLock();
+  viewStack.length = 0; viewStack.push({ name: 'home', p: {} });
+  view = { name: 'workout', p: { id: s.id } }; render(); window.scrollTo(0, 0);
+}
+const newSet = (n, w) => ({ n, weight: w, reps: null, status: 'pending', feel: null, note: '', completedAt: null });
+
+/* Workout (also used to edit a finished session) */
+VIEWS.workout = ({ id }) => {
+  const s = S.sessions[id];
+  if (!s) return topbar('Entrenament') + `<div class="empty" style="margin-top:20px"><b>Aquest entrenament ja no existeix</b><span>Potser s’ha descartat des d’un altre dispositiu.</span></div>`;
+  const editing = s.status === 'finished';
+  const st = sessionStats(s);
+  let h = topbar(editing ? 'Editant sessió' : 'Entrenament', { right: editing ? '' : `<span class="mono muted" id="elapsed" style="font-size:13px">${dur(now() - s.startedAt)}</span>` });
+  h += `<div class="narrow" data-c="${esc(s.color)}"><div class="wk-head"><span class="kicker">${esc(dFmt(s.startedAt, { weekday: 'long', day: 'numeric', month: 'long' }))} · ${tFmt(s.startedAt)}</span><div class="wk-title"><h2>${esc(s.routineName)}<span class="dot">.</span></h2></div>
+    <div class="wk-meta"><span>Progrés</span><span id="wk-count"><b>${st.done}/${st.sets}</b> sèries · <b>${fmtVol(st.vol)}</b> kg</span></div>
+    <div class="progress"><i id="wk-prog" style="width:${st.sets ? st.done / st.sets * 100 : 0}%"></i></div></div>`;
+  h += (s.exercises || []).map((e, i) => exCard(s, e, i)).join('');
+  h += `<label class="f" style="margin-top:28px">Notes de la sessió<textarea class="txt" id="sess-notes" data-bind="sess-notes" placeholder="Com t’has trobat, incidències…">${esc(s.notes || '')}</textarea></label>`;
+  if (editing) h += `<div class="wk-foot"><button class="btn primary block" data-action="done-edit">Fet</button></div>`;
+  else h += `<div class="wk-foot"><button class="btn primary plate block" data-action="finish">Finalitzar entrenament</button><button class="btn danger" data-action="discard">Descartar entrenament</button></div>`;
+  return h + `</div>`;
+};
+function exCard(s, e, i) {
+  const done = e.sets.filter(isDone).length;
+  const allDone = e.sets.length > 0 && done === e.sets.length;
+  const collapsed = UI.collapsed[s.id + ':' + i];
+  const last = lastFor(e.exerciseId, s.status === 'finished' ? s.startedAt : Infinity, s.id);
+  const a = advise(last, { sets: e.planSets, repMin: e.repMin, repMax: e.repMax });
+  const lastSets = last ? last.allSets.filter(isDone) : [];
+  return `<section class="ex ${allDone ? 'all-done' : ''} ${collapsed ? 'collapsed' : ''}" id="ex-${i}" data-ex="${i}">
+    <button class="ex-h" data-action="toggle-ex" data-ex="${i}" aria-expanded="${!collapsed}"><span class="idx">${String(i + 1).padStart(2, '0')}</span><h3>${esc(exName(e.exerciseId, e.name))}</h3><span class="cnt">${done}/${e.sets.length}</span></button>
+    <div class="ex-b">
+      <div class="ref">${last ? `<span>Última sessió · ${esc(dShort(last.t))}${last.routineId !== s.routineId ? ' · ' + esc(last.routineName) : ''}</span><span class="sets">${lastSets.map((x, k) => `S${k + 1} ${fmtKg(num(x.weight))} kg × ${x.reps}`).join(' · ')}</span>` : `<span>Sense historial · objectiu ${e.repMin}–${e.repMax} reps</span>`}</div>
+      ${last ? `<div class="rec ${a.cls}">${esc(a.text)}</div>` : ''}
+      <div class="sets-t"><div class="set-h"><span style="text-align:center">#</span><span>Pes (kg)</span><span>Reps (${e.repMin}–${e.repMax})</span><span></span></div>
+      ${e.sets.map((x, j) => setRow(e, x, i, j, lastSets[j])).join('')}</div>
+      <div class="ex-a"><button class="btn sm" data-action="add-set" data-ex="${i}">+ Sèrie</button><button class="btn sm" data-action="del-set" data-ex="${i}" ${e.sets.length ? '' : 'disabled'}>− Treure última</button><button class="btn sm" data-action="ex-note" data-ex="${i}">Nota</button>${e.rest || settings().restDefault ? `<span class="faint" style="font-size:12px;align-self:center">Descans ${e.rest ?? settings().restDefault} s</span>` : ''}</div>
+      <textarea class="txt" data-bind="ex-notes" data-ex="${i}" placeholder="Notes de l’exercici (seient, agafada…)" ${e.notes || UI.noteOpen[s.id + ':' + i] ? '' : 'hidden'}>${esc(e.notes || '')}</textarea>
+    </div></section>`;
+}
+function setRow(e, x, i, j, ref) {
+  const d = isDone(x);
+  const showX = d || x.feel || x.note;
+  const noteOpen = x.note || UI.setOpen[i + ':' + j];
+  return `<div class="set ${d ? 'done' : ''}" data-ex="${i}" data-set="${j}"><span class="n">${j + 1}</span>
+    <input class="num" id="w-${i}-${j}" data-bind="weight" data-ex="${i}" data-set="${j}" inputmode="decimal" autocomplete="off" enterkeyhint="next" aria-label="Pes sèrie ${j + 1}" placeholder="kg" value="${x.weight == null ? '' : esc(String(x.weight).replace('.', ','))}">
+    <input class="num" id="r-${i}-${j}" data-bind="reps" data-ex="${i}" data-set="${j}" inputmode="numeric" pattern="[0-9]*" autocomplete="off" enterkeyhint="done" aria-label="Repeticions sèrie ${j + 1}" placeholder="${ref ? ref.reps : '—'}" value="${x.reps == null ? '' : x.reps}">
+    <button class="chk" data-action="toggle-set" data-ex="${i}" data-set="${j}" aria-pressed="${d}" aria-label="${d ? 'Desmarcar' : 'Marcar'} sèrie ${j + 1}">${ICON.check}</button></div>
+    ${showX ? `<div class="set-x" data-ex="${i}" data-set="${j}">${FEELS.map(([k, l]) => `<button class="chip" data-action="feel" data-feel="${k}" data-ex="${i}" data-set="${j}" aria-pressed="${x.feel === k}">${l}</button>`).join('')}${noteOpen ? '' : `<button class="chip" data-action="set-note-open" data-ex="${i}" data-set="${j}">+ Nota</button>`}
+      ${noteOpen ? `<input class="txt set-note" data-bind="set-note" data-ex="${i}" data-set="${j}" placeholder="Observació de la sèrie" value="${esc(x.note || '')}" style="min-height:36px;padding:6px 10px;font-size:13px">` : ''}</div>` : ''}`;
+}
+const UI = { collapsed: {}, noteOpen: {}, setOpen: {}, hist: { routine: 'all', from: '', to: '' } };
+
+function refreshCounts(s) {
+  const st = sessionStats(s);
+  const c = $('#wk-count'); if (c) c.innerHTML = `<b>${st.done}/${st.sets}</b> sèries · <b>${fmtVol(st.vol)}</b> kg`;
+  const p = $('#wk-prog'); if (p) p.style.width = (st.sets ? st.done / st.sets * 100 : 0) + '%';
+}
+function rerenderCard(s, i) {
+  const el = $('#ex-' + i); if (!el) return render(true);
+  const tmp = document.createElement('div'); tmp.innerHTML = exCard(s, s.exercises[i], i);
+  el.replaceWith(tmp.firstElementChild);
+  refreshCounts(s);
+}
+function curSession() { return view.name === 'workout' ? S.sessions[view.p.id] : null; }
+function touchSession(s, delay) { put('sessions', s.id, s, delay); S.rev++; }
+
+/* Finish */
+async function finishSession() {
+  const s = curSession(); if (!s) return;
+  const st = sessionStats(s);
+  const pendingSets = st.sets - st.done;
+  if (pendingSets > 0) {
+    const ok = await confirmBox({ title: 'Hi ha sèries pendents', body: `Tens ${pendingSets} ${pendingSets === 1 ? 'sèrie pendent' : 'sèries pendents'}. Si finalitzes, es guardaran tal com estan i no comptaran com a completades.`, ok: 'Finalitzar igualment', cancel: 'Continuar entrenant' });
+    if (!ok) return;
+  }
+  s.status = 'finished'; s.endedAt = now();
+  touchSession(s, 0);
+  stopRest(); releaseWakeLock();
+  viewStack.length = 0; viewStack.push({ name: 'home', p: {} });
+  view = { name: 'summary', p: { id: s.id } }; render(); window.scrollTo(0, 0);
+}
+
+/* Summary */
+VIEWS.summary = ({ id }) => {
+  const s = S.sessions[id]; if (!s) return topbar('Resum') + `<div class="empty"><b>Sessió no trobada</b></div>`;
+  const st = sessionStats(s);
+  const d = derived();
+  const prev = d.finished.filter(x => x.routineId === s.routineId && x.startedAt < s.startedAt).pop();
+  let h = topbar('Resum', { backBtn: false, right: `<button class="icon-btn" data-action="tab" data-tab="home">Tancar</button>` });
+  h += `<div data-c="${esc(s.color)}"><header class="hero"><span class="kicker rv">${esc(s.routineName)} · ${esc(dFmt(s.startedAt, { weekday: 'long', day: 'numeric', month: 'long' }))} · ${tFmt(s.startedAt)}–${tFmt(s.endedAt)}</span><h1 class="display rv">Fet<span class="dot">.</span></h1></header>`;
+  h += `<div class="section tight rv"><div class="figures four">${fig(fmtVol(st.vol), 'kg', 'Volum total')}${fig(st.done + '/' + st.sets, '', 'Sèries completades')}${fig(st.exDone + '/' + st.exTotal, '', 'Exercicis')}${fig(dur(s.endedAt - s.startedAt), '', 'Durada')}</div>`;
+  if (prev) {
+    const ps = sessionStats(prev), dv = st.vol - ps.vol;
+    h += `<p class="lede" style="max-width:48ch">Respecte a l’última sessió de ${esc(s.routineName)} (${esc(dShort(prev.startedAt))}): volum <b class="${dv >= 0 ? 'delta-up' : 'delta-down'}">${dv >= 0 ? '+' : ''}${fmtVol(dv)} kg</b> (${fmtVol(ps.vol)} → ${fmtVol(st.vol)}), sèries ${ps.done} → ${st.done}.</p>`;
+  } else h += `<p class="lede" style="max-width:48ch">És la primera sessió de ${esc(s.routineName)} registrada. La propera ja tindrà comparació.</p>`;
+  h += `</div>`;
+  const improvements = [], recs = [];
+  (s.exercises || []).forEach(e => {
+    const done = e.sets.filter(isDone); if (!done.length) return;
+    const cur = (d.exHist[e.exerciseId] || []).find(x => x.sessionId === s.id);
+    const prv = lastFor(e.exerciseId, s.startedAt, s.id);
+    const nm = exName(e.exerciseId, e.name);
+    if (cur && prv) {
+      const parts = [];
+      if (cur.maxW > prv.maxW) parts.push(`pes ${fmtKg(prv.maxW)} → ${fmtKg(cur.maxW)} kg`);
+      else if (cur.maxW === prv.maxW && cur.reps > prv.reps) parts.push(`+${cur.reps - prv.reps} reps amb ${fmtKg(cur.maxW)} kg`);
+      if (cur.vol > prv.vol) parts.push(`volum +${fmtVol(cur.vol - prv.vol)} kg`);
+      if (parts.length) improvements.push(`<li><b>${esc(nm)}</b>: ${esc(parts.join(', '))}</li>`);
+    }
+    if (cur) { const a = advise(cur, { sets: e.planSets, repMin: e.repMin, repMax: e.repMax }); recs.push(`<div class="rec ${a.cls}"><b>${esc(nm)}</b>. ${esc(a.text)}</div>`); }
+  });
+  h += `<div class="section rv"><header><h2>Millores<span class="dot">.</span></h2></header>${improvements.length ? `<ul style="margin:0;padding-left:18px;display:grid;gap:8px;font-size:17px">${improvements.join('')}</ul>` : `<p class="muted" style="margin:0">${prev || d.finished.length > 1 ? 'Cap millora respecte a l’última vegada que vas fer aquests exercicis.' : 'Encara no hi ha sessions anteriors amb què comparar.'}</p>`}</div>`;
+  h += `<div class="section rv"><header><h2>Pròxima sessió<span class="dot">.</span></h2></header>${recs.join('') || '<p class="muted">Sense sèries completades.</p>'}<p class="faint" style="font-size:12px;margin:0">Els suggeriments es basen en les repeticions i en com has marcat cada sèrie. El pes no canvia sol.</p></div>`;
+  h += `<div class="section rv"><header><h2>Sèries<span class="dot">.</span></h2></header>${sessionTable(s)}</div>`;
+  h += `<div class="wk-foot narrow"><button class="btn primary block" data-action="tab" data-tab="home">Tornar a l’inici</button><button class="btn" data-action="open-session" data-id="${esc(s.id)}">Veure a l’historial</button></div></div>`;
+  return h;
+};
+function sessionTable(s) {
+  return (s.exercises || []).map(e => {
+    const v = e.sets.filter(isDone).reduce((a, x) => a + (num(x.weight) || 0) * x.reps, 0);
+    return `<div class="panel" style="gap:8px"><div class="row"><span class="sub-h grow" style="font-size:18px">${esc(exName(e.exerciseId, e.name))}</span><span class="mono" style="font-weight:600">${fmtVol(v)} <span class="muted" style="font-weight:500;font-size:13px">kg</span></span></div>
+    <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Sèrie</th><th class="r">Pes</th><th class="r">Reps</th><th>Estat</th><th>Sensació</th></tr></thead><tbody>
+    ${e.sets.map((x, j) => `<tr><td class="mono">${j + 1}</td><td class="r mono">${x.weight == null ? '—' : fmtKg(num(x.weight)) + ' kg'}</td><td class="r mono">${x.reps ?? '—'}</td><td>${isDone(x) ? 'Completada' : '<span class="faint">Pendent</span>'}</td><td>${x.feel ? esc(FEEL_LABEL[x.feel]) : ''}${x.note ? `<div class="muted" style="font-size:12px">${esc(x.note)}</div>` : ''}</td></tr>`).join('')}
+    </tbody></table></div>${e.notes ? `<div class="muted" style="font-size:13px">${esc(e.notes)}</div>` : ''}</div>`;
+  }).join('') + (s.notes ? `<div class="panel"><span class="eyebrow">Notes</span><div>${esc(s.notes)}</div></div>` : '');
+}
+
+/* History */
+VIEWS.history = () => {
+  const d = derived(), f = UI.hist;
+  let list = d.sessions.slice().reverse();
+  if (f.routine !== 'all') list = list.filter(s => s.routineId === f.routine);
+  if (f.from) list = list.filter(s => s.startedAt >= new Date(f.from + 'T00:00').getTime());
+  if (f.to) list = list.filter(s => s.startedAt <= new Date(f.to + 'T23:59:59').getTime());
+  const tot = d.finished.reduce((a, s) => a + sessionStats(s).vol, 0);
+  let h = pageHead('Totes les sessions', 'Historial', d.finished.length ? `<b>${d.finished.length} ${d.finished.length === 1 ? 'sessió' : 'sessions'}</b> i ${fmtVol(tot)} kg de volum des del ${esc(dFmt(d.finished[0].startedAt, { day: 'numeric', month: 'long', year: 'numeric' }))}.` : '');
+  h += `<div class="section tight rv"><div class="seg">${[['all', 'Totes']].concat(sortedRoutines().map(r => [r.id, r.name])).map(([k, l]) => `<button class="chip" data-action="hist-routine" data-id="${esc(k)}" aria-pressed="${f.routine === k}">${esc(l)}</button>`).join('')}</div>
+    <div class="grid2"><label class="f">Des de<input type="date" class="txt" id="hist-from" data-bind="hist-from" value="${esc(f.from)}"></label><label class="f">Fins a<input type="date" class="txt" id="hist-to" data-bind="hist-to" value="${esc(f.to)}"></label></div></div>`;
+  h += `<div class="section tight rv"><header><span class="eyebrow">${list.length} ${list.length === 1 ? 'resultat' : 'resultats'}</span>${f.routine !== 'all' || f.from || f.to ? `<button class="link" data-action="hist-clear">Treure filtres</button>` : ''}</header>`;
+  if (!d.sessions.length) h += `<div class="empty"><b>Encara no hi ha sessions</b><span>Comença un entrenament des de l’inici; cada sessió finalitzada apareixerà aquí.</span></div>`;
+  else if (!list.length) h += `<div class="empty"><b>Cap sessió amb aquests filtres</b></div>`;
+  else {
+    let month = '';
+    h += '<div>' + list.map(s => {
+      const st = sessionStats(s), m = dFmt(s.startedAt, { month: 'long', year: 'numeric' });
+      const head = m !== month ? `<div class="month-h">${esc(m)}</div>` : ''; month = m;
+      return head + `<button class="li" data-c="${esc(s.color)}" data-action="open-session" data-id="${esc(s.id)}"><span class="day"><b>${new Date(s.startedAt).getDate()}</b><span>${esc(dFmt(s.startedAt, { weekday: 'short' }))}</span></span>
+        <span class="main"><span class="t" style="display:block">${esc(s.routineName)}${s.status === 'active' ? ' <span class="tag">En curs</span>' : ''}</span><span class="s" style="display:block">${tFmt(s.startedAt)} · ${s.status === 'finished' ? dur(s.endedAt - s.startedAt) : 'sense finalitzar'} · ${st.done}/${st.sets} sèries</span></span>
+        <span class="end">${fmtVol(st.vol)}<small>kg</small></span><span class="chev">›</span></button>`;
+    }).join('') + '</div>';
+  }
+  return h + `</div>`;
+};
+
+VIEWS.session = ({ id, cmp }) => {
+  const s = S.sessions[id]; if (!s) return topbar('Sessió') + `<div class="empty" style="margin-top:20px"><b>Sessió no trobada</b></div>`;
+  const st = sessionStats(s), d = derived();
+  let h = topbar('Sessió');
+  h += `<div data-c="${esc(s.color)}"><header class="hero"><span class="kicker rv">${esc(dLong(s.startedAt))} · ${tFmt(s.startedAt)}</span><h1 class="display md rv">${esc(s.routineName)}<span class="dot">.</span></h1></header>`;
+  h += `<div class="section tight rv"><div class="figures four">${fig(fmtVol(st.vol), 'kg', 'Volum')}${fig(st.done + '/' + st.sets, '', 'Sèries')}${fig(st.exDone + '/' + st.exTotal, '', 'Exercicis')}${fig(s.status === 'finished' ? dur(s.endedAt - s.startedAt) : 'En curs', '', 'Durada')}</div></div>`;
+  const others = d.sessions.filter(x => x.id !== s.id).slice().reverse();
+  const cmpS = cmp ? S.sessions[cmp] : null;
+  h += `<div class="section rv"><header><h2>Comparar<span class="dot">.</span></h2></header><label class="f">Tria una altra sessió<select class="txt" id="cmp-sel" data-bind="cmp"><option value="">—</option>${others.map(o => `<option value="${esc(o.id)}" ${cmp === o.id ? 'selected' : ''}>${esc(dShort(o.startedAt))} · ${esc(o.routineName)}</option>`).join('')}</select></label>${cmpS ? compareTable(s, cmpS) : ''}</div>`;
+  h += `<div class="section rv"><header><h2>Sèries<span class="dot">.</span></h2></header>${sessionTable(s)}</div>`;
+  h += `<div class="wk-foot narrow">${s.status === 'active' ? `<button class="btn primary plate block" data-action="open-workout">Continuar entrenament</button>` : `<button class="btn block" data-action="edit-session" data-id="${esc(s.id)}">Editar sèries</button>`}<button class="btn danger" data-action="delete-session" data-id="${esc(s.id)}">Eliminar sessió</button></div></div>`;
+  return h;
+};
+function compareTable(a, b) {
+  const ids = []; [a, b].forEach(s => (s.exercises || []).forEach(e => { if (!ids.includes(e.exerciseId)) ids.push(e.exerciseId); }));
+  const info = (s, id) => { const e = (s.exercises || []).find(x => x.exerciseId === id); if (!e) return null; const dn = e.sets.filter(isDone); return { vol: dn.reduce((t, x) => t + (num(x.weight) || 0) * x.reps, 0), maxW: dn.length ? Math.max(...dn.map(x => num(x.weight) || 0)) : null, line: setsLine(dn) }; };
+  const sa = sessionStats(a), sb = sessionStats(b);
+  return `<div class="panel" style="gap:6px"><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Exercici</th><th>${esc(dShort(a.startedAt))}</th><th>${esc(dShort(b.startedAt))}</th><th class="r">Δ volum</th></tr></thead><tbody>
+  ${ids.map(id => { const x = info(a, id), y = info(b, id); const dv = (x?.vol || 0) - (y?.vol || 0);
+    return `<tr><td>${esc(exName(id))}</td><td class="mono" style="font-size:12px">${x ? esc(x.line || '—') : '<span class="faint">no fet</span>'}</td><td class="mono" style="font-size:12px">${y ? esc(y.line || '—') : '<span class="faint">no fet</span>'}</td><td class="r mono ${dv > 0 ? 'delta-up' : dv < 0 ? 'delta-down' : ''}">${x && y ? (dv > 0 ? '+' : '') + fmtVol(dv) : '—'}</td></tr>`; }).join('')}
+  <tr><td><b>Total</b></td><td class="mono">${fmtVol(sa.vol)} kg</td><td class="mono">${fmtVol(sb.vol)} kg</td><td class="r mono ${sa.vol - sb.vol >= 0 ? 'delta-up' : 'delta-down'}">${sa.vol - sb.vol >= 0 ? '+' : ''}${fmtVol(sa.vol - sb.vol)}</td></tr></tbody></table></div></div>`;
+}
+
+/* Stats */
+VIEWS.stats = () => {
+  const d = derived();
+  const f = d.finished, t30 = now() - 30 * 864e5;
+  const last30 = f.filter(s => s.startedAt >= t30);
+  const allVol = f.reduce((a, s) => a + sessionStats(s).vol, 0);
+  let h = pageHead('Estadístiques', 'Progrés', f.length ? `Cada número surt de les sèries que has completat. <b>${f.length} ${f.length === 1 ? 'sessió registrada' : 'sessions registrades'}</b>.` : 'Quan registris sessions, aquí veuràs com evolucionen.');
+  h += `<div class="section tight rv"><div class="figures">${fig(f.length, '', 'Sessions')}${fig(last30.length, '', 'Últims 30 dies')}${fig(fmtVol(allVol), 'kg', 'Volum total')}</div></div>`;
+  h += `<div class="section rv"><header><h2>Volum per sessió<span class="dot">.</span></h2></header>`;
+  if (f.length < 1) h += `<div class="empty"><b>Encara no hi ha dades</b><span>Registra i finalitza sessions per veure l’evolució del volum.</span></div>`;
+  else {
+    const rs = {}; f.forEach(s => rs[s.routineId] = s);
+    h += `<div class="panel">${chartSlot('bar', { rows: f.slice(-40).map(s => ({ t: s.startedAt, v: sessionStats(s).vol, c: s.color, label: s.routineName })) })}<span class="muted" style="font-size:13px">Últimes ${Math.min(40, f.length)} sessions. Toca una barra per veure’n el detall.</span></div>`;
+  }
+  h += `</div><div class="section rv"><header><h2>Exercicis<span class="dot">.</span></h2><span class="muted" style="font-size:13px">Pes màxim</span></header><div class="list" style="border-top:0">`;
+  const exs = Object.values(S.exercises).concat(Object.keys(d.exHist).filter(id => !S.exercises[id]).map(id => ({ id, name: (d.exHist[id][0].allSets && exNameFromHist(id)) || id, deleted: true })));
+  const order = []; sortedRoutines().forEach(r => (r.items || []).forEach(i => { if (!order.includes(i.exerciseId)) order.push(i.exerciseId); }));
+  exs.sort((a, b) => { const ia = order.indexOf(a.id), ib = order.indexOf(b.id); return (ia < 0 ? 999 : ia) - (ib < 0 ? 999 : ib) || a.name.localeCompare(b.name); });
+  h += exs.map(e => { const hist = d.exHist[e.id] || [], last = hist[hist.length - 1], best = hist.length ? Math.max(...hist.map(x => x.maxW)) : null;
+    return `<button class="li" data-action="open-exercise" data-id="${esc(e.id)}"><span class="main"><span class="t" style="display:block">${esc(e.name)}${e.deleted ? ' <span class="tag">eliminat</span>' : ''}</span><span class="s" style="display:block">${hist.length ? `${hist.length} ${hist.length === 1 ? 'sessió' : 'sessions'} · última ${esc(dShort(last.t))}` : 'Sense registres'}</span></span><span class="end">${best != null ? fmtKg(best) + '<small>kg</small>' : '<small>—</small>'}</span><span class="chev">›</span></button>`; }).join('');
+  return h + `</div></div>`;
+};
+function exNameFromHist(id) { for (const s of derived().sessions) for (const e of s.exercises || []) if (e.exerciseId === id && e.name) return e.name; return null; }
+
+VIEWS.exercise = ({ id }) => {
+  const d = derived(), hist = d.exHist[id] || [];
+  const name = exName(id, exNameFromHist(id));
+  let h = topbar('Exercici');
+  const rs = routinesUsing(id);
+  h += `<header class="hero"><span class="kicker rv">${rs.length ? esc(rs.map(r => r.name).join(' · ')) : 'Fora de les rutines actuals'}</span><h1 class="display md rv">${esc(name)}<span class="dot">.</span></h1></header>`;
+  if (!hist.length) return h + `<div class="section tight"><div class="empty"><b>Sense registres</b><span>Completa sèries d’aquest exercici en un entrenament i aquí veuràs el pes, les repeticions i el volum.</span></div></div>`;
+  const best = hist.reduce((a, x) => x.vol > a.vol ? x : a, hist[0]);
+  const maxW = hist.reduce((a, x) => x.maxW > a.maxW ? x : a, hist[0]);
+  const last = hist[hist.length - 1];
+  const plan = (rs[0]?.items || []).find(i => i.exerciseId === id);
+  const a = advise(last, plan);
+  h += `<div class="section tight rv"><div class="figures">${fig(fmtKg(maxW.maxW), 'kg', 'Pes màxim · ' + dShort(maxW.t))}${fig(fmtVol(best.vol), 'kg', 'Millor sessió · ' + dShort(best.t))}${fig(hist.length, '', 'Sessions')}</div></div>
+    <div class="section rv"><header><h2>Última sessió<span class="dot">.</span></h2><span class="muted" style="font-size:14px">${esc(dShort(last.t))} · ${esc(last.routineName)}</span></header><div class="ref"><span class="sets" style="font-size:22px">${esc(setsLine(last.sets))}</span><span>${fmtVol(last.vol)} kg de volum</span></div><div class="rec ${a.cls}">${esc(a.text)}</div></div>`;
+  const enough = hist.length >= 2;
+  const emptyChart = `<div class="empty" style="border-top:0"><b>Cal registrar més sessions</b><span>Amb dues sessions d’aquest exercici ja es dibuixa l’evolució.</span></div>`;
+  h += `<div class="section rv"><header><h2>Pes<span class="dot">.</span></h2><span class="muted" style="font-size:14px">Pes màxim per sessió, kg</span></header>${enough ? `<div class="panel">${chartSlot('line', { unit: 'kg', series: [{ name: 'Pes màxim', color: 'var(--accent)', pts: hist.map(x => ({ t: x.t, v: x.maxW })) }] })}</div>` : emptyChart}</div>`;
+  const maxSets = Math.min(5, Math.max(...hist.map(x => x.sets.length)));
+  const SC = ['var(--accent)', 'var(--fg)', 'var(--muted)', 'var(--faint)', 'var(--line)'];
+  const repSeries = []; for (let k = 0; k < maxSets; k++) repSeries.push({ name: 'Sèrie ' + (k + 1), color: SC[k], pts: hist.filter(x => x.sets[k]).map(x => ({ t: x.t, v: x.sets[k].reps, w: num(x.sets[k].weight) })) });
+  h += `<div class="section rv"><header><h2>Repeticions<span class="dot">.</span></h2><span class="muted" style="font-size:14px">Per sèrie</span></header>${enough ? `<div class="panel">${chartSlot('line', { unit: 'reps', series: repSeries, int: true })}<div class="legend">${repSeries.map(s => `<span><i style="--lc:${s.color}"></i>${s.name}</span>`).join('')}</div></div>` : emptyChart}</div>`;
+  h += `<div class="section rv"><header><h2>Volum<span class="dot">.</span></h2><span class="muted" style="font-size:14px">Pes × reps, kg</span></header>${enough ? `<div class="panel">${chartSlot('line', { unit: 'kg', area: true, series: [{ name: 'Volum', color: 'var(--accent)', pts: hist.map(x => ({ t: x.t, v: x.vol })) }] })}</div>` : emptyChart}</div>`;
+  h += `<div class="section rv"><header><h2>Totes les sessions<span class="dot">.</span></h2></header><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Data</th><th>Rutina</th><th>Sèries</th><th class="r">Volum</th></tr></thead><tbody>
+    ${hist.slice().reverse().map(x => `<tr><td class="mono" style="white-space:nowrap">${esc(dShort(x.t))}</td><td>${esc(x.routineName)}</td><td class="mono" style="font-size:12.5px">${esc(setsLine(x.sets))}</td><td class="r mono">${fmtVol(x.vol)}</td></tr>`).join('')}</tbody></table></div></div>`;
+  return h;
+};
+
+/* ---------- charts (hand-drawn SVG, real data only) ---------- */
+const CH = {}; let chN = 0;
+function chartSlot(type, cfg) { const id = 'ch' + (++chN); CH[id] = { type, cfg }; return `<div class="chart" id="${id}" data-chart="${id}"></div>`; }
+function niceTicks(min, max, n = 4) {
+  if (min === max) { min -= 1; max += 1; }
+  const span = max - min, step0 = span / n, mag = 10 ** Math.floor(Math.log10(step0)), r = step0 / mag;
+  const step = (r <= 1 ? 1 : r <= 2 ? 2 : r <= 2.5 ? 2.5 : r <= 5 ? 5 : 10) * mag;
+  const lo = Math.floor(min / step) * step, hi = Math.ceil(max / step) * step, t = [];
+  for (let v = lo; v <= hi + step / 2; v += step) t.push(+v.toFixed(6));
+  return t;
+}
+function drawCharts() {
+  $$('[data-chart]').forEach(el => {
+    const c = CH[el.dataset.chart]; if (!c) return;
+    const W = Math.max(260, el.clientWidth), H = 190;
+    if (c.type === 'line') drawLine(el, c.cfg, W, H); else drawBars(el, c.cfg, W, H);
+  });
+}
+function drawLine(el, cfg, W, H) {
+  const pad = { l: 44, r: 12, t: 12, b: 26 };
+  const all = cfg.series.flatMap(s => s.pts);
+  const ts = Array.from(new Set(all.map(p => p.t))).sort((a, b) => a - b);
+  const vs = all.map(p => p.v);
+  let lo = Math.min(...vs), hi = Math.max(...vs);
+  if (cfg.area) lo = 0;
+  const ticks = niceTicks(lo, hi); lo = ticks[0]; hi = ticks[ticks.length - 1];
+  const t0 = ts[0], t1 = ts[ts.length - 1];
+  const x = t => t1 === t0 ? (pad.l + W - pad.r) / 2 : pad.l + (t - t0) / (t1 - t0) * (W - pad.l - pad.r);
+  const y = v => pad.t + (1 - (v - lo) / (hi - lo)) * (H - pad.t - pad.b);
+  let g = ticks.map(v => `<line class="grid-l" x1="${pad.l}" x2="${W - pad.r}" y1="${y(v)}" y2="${y(v)}"/><text class="ax" x="${pad.l - 6}" y="${y(v) + 4}" text-anchor="end">${fmtN(v, 1)}</text>`).join('');
+  const xl = ts.length > 1 ? [ts[0], ts[ts.length - 1]] : ts;
+  g += xl.map((t, k) => `<text class="ax" x="${x(t)}" y="${H - 6}" text-anchor="${ts.length === 1 ? 'middle' : k ? 'end' : 'start'}">${esc(dShort(t))}</text>`).join('');
+  let marks = '';
+  cfg.series.forEach(s => {
+    if (!s.pts.length) return;
+    const d = s.pts.map((p, i) => (i ? 'L' : 'M') + x(p.t).toFixed(1) + ' ' + y(p.v).toFixed(1)).join(' ');
+    if (cfg.area) marks += `<path d="${d} L${x(s.pts[s.pts.length - 1].t).toFixed(1)} ${y(lo)} L${x(s.pts[0].t).toFixed(1)} ${y(lo)} Z" fill="${s.color}" opacity=".12"/>`;
+    marks += `<path d="${d}" fill="none" stroke="${s.color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+    marks += s.pts.map((p, i) => `<circle cx="${x(p.t)}" cy="${y(p.v)}" r="${i === s.pts.length - 1 ? 4.5 : 3}" fill="${s.color}" stroke="var(--surface)" stroke-width="2"/>`).join('');
+  });
+  el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" height="${H}" role="img" aria-label="Gràfica">${g}${marks}<line class="guide" x1="0" x2="0" y1="${pad.t}" y2="${H - pad.b}" stroke="var(--faint)" stroke-dasharray="3 3" opacity="0"/><rect x="${pad.l}" y="0" width="${W - pad.l - pad.r}" height="${H}" fill="transparent"/></svg><div class="tip" hidden></div>`;
+  const svg = el.querySelector('svg'), tip = el.querySelector('.tip'), guide = el.querySelector('.guide');
+  const move = ev => {
+    const r = svg.getBoundingClientRect(), px = (ev.clientX - r.left) * W / r.width;
+    let best = ts[0]; ts.forEach(t => { if (Math.abs(x(t) - px) < Math.abs(x(best) - px)) best = t; });
+    const rows = cfg.series.map(s => { const p = s.pts.find(q => q.t === best); return p ? `<div><span style="color:${s.color}">●</span> ${esc(s.name)} <b>${cfg.int ? p.v : fmtN(p.v, 1)}${cfg.unit === 'kg' ? ' kg' : ''}</b>${p.w != null ? ` <span class="muted">· ${fmtKg(p.w)} kg</span>` : ''}</div>` : ''; }).join('');
+    tip.innerHTML = `<div class="muted">${esc(dShort(best))}</div>${rows}`; tip.hidden = false;
+    const left = Math.min(Math.max(x(best) * r.width / W, 70), r.width - 70); tip.style.left = left + 'px';
+    guide.setAttribute('x1', x(best)); guide.setAttribute('x2', x(best)); guide.setAttribute('opacity', 1);
+  };
+  svg.addEventListener('pointermove', move); svg.addEventListener('pointerdown', move);
+  svg.addEventListener('pointerleave', () => { tip.hidden = true; guide.setAttribute('opacity', 0); });
+}
+function drawBars(el, cfg, W, H) {
+  const pad = { l: 48, r: 8, t: 12, b: 26 }, rows = cfg.rows, n = rows.length;
+  const ticks = niceTicks(0, Math.max(1, ...rows.map(r => r.v))), hi = ticks[ticks.length - 1];
+  const bw = (W - pad.l - pad.r) / n, gap = Math.min(6, bw * .25);
+  const y = v => pad.t + (1 - v / hi) * (H - pad.t - pad.b);
+  let g = ticks.map(v => `<line class="grid-l" x1="${pad.l}" x2="${W - pad.r}" y1="${y(v)}" y2="${y(v)}"/><text class="ax" x="${pad.l - 6}" y="${y(v) + 4}" text-anchor="end">${v >= 1000 ? fmtN(v / 1000, 1) + 'k' : fmtN(v, 0)}</text>`).join('');
+  g += `<text class="ax" x="${pad.l}" y="${H - 6}">${esc(dShort(rows[0].t))}</text><text class="ax" x="${W - pad.r}" y="${H - 6}" text-anchor="end">${esc(dShort(rows[n - 1].t))}</text>`;
+  const bars = rows.map((r, i) => { const x0 = pad.l + i * bw + gap / 2, w = Math.max(2, bw - gap), y0 = y(r.v), hh = Math.max(0, y(0) - y0);
+    return `<rect x="${x0}" y="${y0}" width="${w}" height="${hh}" rx="${Math.min(4, w / 2)}" fill="${i === n - 1 ? 'var(--accent)' : 'var(--fill-2)'}"/>`; }).join('');
+  el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" height="${H}" role="img" aria-label="Volum per sessió">${g}${bars}<rect x="${pad.l}" y="0" width="${W - pad.l - pad.r}" height="${H}" fill="transparent"/></svg><div class="tip" hidden></div>`;
+  const svg = el.querySelector('svg'), tip = el.querySelector('.tip');
+  const move = ev => { const r = svg.getBoundingClientRect(), px = (ev.clientX - r.left) * W / r.width; const i = Math.max(0, Math.min(n - 1, Math.floor((px - pad.l) / bw))); const row = rows[i];
+    tip.innerHTML = `<div class="muted">${esc(dShort(row.t))} · ${esc(row.label)}</div><b>${fmtVol(row.v)} kg</b>`; tip.hidden = false; tip.style.left = Math.min(Math.max((pad.l + (i + .5) * bw) * r.width / W, 70), r.width - 70) + 'px'; };
+  svg.addEventListener('pointermove', move); svg.addEventListener('pointerdown', move);
+  svg.addEventListener('pointerleave', () => { tip.hidden = true; });
+}
+let rsT; window.addEventListener('resize', () => { clearTimeout(rsT); rsT = setTimeout(drawCharts, 150); });
+
+/* Manage */
+VIEWS.manage = () => {
+  const rs = sortedRoutines();
+  let h = pageHead('Gestió', 'Rutines', 'Ordena, edita i crea rutines. Els canvis afecten els entrenaments nous i l’historial es manté.');
+  h += `<div class="section tight rv"><header><h2>Rutines<span class="dot">.</span></h2><button class="link plain" data-action="new-routine">+ Nova rutina</button></header>`;
+  h += rs.length ? `<div class="list" style="border-top:0">${rs.map((r, k) => `<div class="li" data-c="${esc(r.color)}"><span class="num-idx" style="font-size:22px;padding:0;align-self:center">${esc(r.letter || '')}</span><button class="main" style="border:0;background:none;text-align:left;padding:0" data-action="edit-routine" data-id="${esc(r.id)}"><span class="t" style="display:block">${esc(r.name)}</span><span class="s" style="display:block">${(r.items || []).length} exercicis</span></button>
+    <button class="mini" data-action="routine-move" data-id="${esc(r.id)}" data-dir="-1" ${k ? '' : 'disabled'} aria-label="Pujar">↑</button><button class="mini" data-action="routine-move" data-id="${esc(r.id)}" data-dir="1" ${k < rs.length - 1 ? '' : 'disabled'} aria-label="Baixar">↓</button></div>`).join('')}</div>` : `<div class="empty"><b>Cap rutina</b><span>Crea’n una o restaura una còpia des de Dades.</span></div>`;
+  h += `</div><div class="section rv"><header><h2>Exercicis<span class="dot">.</span></h2><button class="link plain" data-action="new-exercise">+ Nou exercici</button></header><div class="list" style="border-top:0">`;
+  const d = derived();
+  h += Object.values(S.exercises).sort((a, b) => a.name.localeCompare(b.name)).map(e => { const u = routinesUsing(e.id), n = (d.exHist[e.id] || []).length;
+    return `<button class="li" data-action="edit-exercise" data-id="${esc(e.id)}"><span class="main"><span class="t" style="display:block">${esc(e.name)}</span><span class="s" style="display:block">${u.length ? esc(u.map(r => r.name).join(', ')) : 'Cap rutina'} · ${n} ${n === 1 ? 'sessió' : 'sessions'}</span></span><span class="chev">›</span></button>`; }).join('') || `<div class="li muted">Cap exercici</div>`;
+  h += `</div></div><div class="section rv"><header><h2>Dades<span class="dot">.</span></h2><button class="link" data-action="go" data-view="data">Obrir</button></header><p class="muted" style="margin:0">Còpia de seguretat, exportació a CSV, restauració i preferències de descans.</p></div>`;
+  return h;
+};
+VIEWS.redit = ({ id }) => {
+  const r = S.routines[id]; if (!r) return topbar('Rutina') + `<div class="empty"><b>Rutina no trobada</b></div>`;
+  const items = r.items || [];
+  let h = topbar('Editar rutina');
+  h += `<header class="hero"><span class="kicker rv">Editar rutina</span><h1 class="display md rv">${esc(r.name)}<span class="dot">.</span></h1></header>`;
+  h += `<div class="section tight rv" data-c="${esc(r.color)}"><div class="grid2" style="grid-template-columns:80px 1fr"><label class="f">Lletra<input class="txt" id="r-letter" data-bind="r-letter" maxlength="2" value="${esc(r.letter || '')}"></label><label class="f">Nom<input class="txt" id="r-name" data-bind="r-name" value="${esc(r.name)}"></label></div>
+</div>`;
+  h += `<div class="section rv"><header><h2>Exercicis<span class="dot">.</span></h2><button class="link plain" data-action="add-item">+ Afegir exercici</button></header>`;
+  h += items.length ? `<div>${items.map((it, k) => `<div class="it"><div class="it-top"><span class="num-idx" style="padding:0">${String(k + 1).padStart(2, '0')}</span><span class="t">${esc(exName(it.exerciseId))}</span>
+      <button class="mini" data-action="item-move" data-k="${k}" data-dir="-1" ${k ? '' : 'disabled'} aria-label="Pujar">↑</button><button class="mini" data-action="item-move" data-k="${k}" data-dir="1" ${k < items.length - 1 ? '' : 'disabled'} aria-label="Baixar">↓</button><button class="mini" data-action="item-del" data-k="${k}" aria-label="Treure de la rutina">✕</button></div>
+      <div class="it-ctl"><label>Sèries<input class="num" id="it-sets-${k}" data-bind="it" data-f="sets" data-k="${k}" inputmode="numeric" value="${it.sets}"></label><label>Reps mín<input class="num" id="it-min-${k}" data-bind="it" data-f="repMin" data-k="${k}" inputmode="numeric" value="${it.repMin}"></label><label>Reps màx<input class="num" id="it-max-${k}" data-bind="it" data-f="repMax" data-k="${k}" inputmode="numeric" value="${it.repMax}"></label><label>Descans s<input class="num" id="it-rest-${k}" data-bind="it" data-f="rest" data-k="${k}" inputmode="numeric" placeholder="${settings().restDefault}" value="${it.rest ?? ''}"></label></div></div>`).join('')}</div>` : `<div class="empty"><b>Sense exercicis</b><span>Afegeix exercicis existents o crea’n de nous.</span></div>`;
+  h += `<p class="faint" style="font-size:12px;margin:0">Els canvis s’apliquen als entrenaments nous. L’historial no es modifica.</p></div>`;
+  h += `<div class="wk-foot"><button class="btn danger" data-action="delete-routine" data-id="${esc(r.id)}">Eliminar rutina</button></div>`;
+  return h;
+};
+
+VIEWS.login = () => {
+  return `<header class="hero"><div class="hero-top rv"><span class="brand">Personal Gym Tracker</span></div><span class="kicker rv">Accés</span><h1 class="display rv">Hola<span class="dot">.</span></h1><p class="lede rv">Entra amb el teu compte per tenir les dades guardades al núvol i sincronitzades entre dispositius.</p></header>
+  <form class="section tight rv narrow" style="margin-left:0" id="login-form" onsubmit="return false"><label class="f">Correu electrònic<input class="txt" id="login-email" type="email" autocomplete="username" inputmode="email" autocapitalize="off"></label>
+  <label class="f">Contrasenya<input class="txt" id="login-pass" type="password" autocomplete="current-password" minlength="6"></label>
+  <p class="muted" id="login-msg" style="margin:0;font-size:14px" aria-live="polite"></p>
+  <div class="cta" style="margin-top:4px"><button class="btn primary" data-action="login">Entrar</button><button class="link plain" data-action="signup">Crear compte</button></div></form>`;
+};
+VIEWS.data = () => {
+  const st = settings();
+  const nS = Object.keys(S.sessions).length;
+  let h = topbar('Dades');
+  h += `<header class="hero"><span class="kicker rv">Còpia de seguretat</span><h1 class="display md rv">Dades<span class="dot">.</span></h1></header>`;
+  h += `<div class="section tight rv"><header><h2>On es guarden<span class="dot">.</span></h2></header><div style="display:grid;gap:10px;font-size:16px;max-width:60ch">`;
+  h += S.mode === 'cloud' && backend === Supa ? `<div>Les dades es guarden a la teva base de dades de Supabase, amb el compte <b>${esc(S.userEmail || '')}</b>. Es mantenen quan tanques o recarregues l’app i les veus des de qualsevol dispositiu on entris amb aquest compte.</div><div class="muted">Aquest dispositiu en guarda una còpia per si et quedes sense connexió al gimnàs; els canvis pendents es pugen quan torna la connexió.</div><div><button class="link plain" data-action="signout">Tancar la sessió</button></div>`
+    : S.mode === 'cloud' ? `<div>Les dades es guarden a la base de dades d’aquesta app a claude.ai. Es mantenen quan tanques o recarregues la pàgina i les veus des de qualsevol dispositiu on obris l’app amb el teu compte.</div><div class="muted">Aquest dispositiu en guarda una còpia per si et quedes sense connexió al gimnàs; els canvis pendents es pugen quan torna la connexió.</div>`
+    : `<div><b>Mode local.</b> Les dades es guarden només en aquest navegador (localStorage). No se sincronitzen amb altres dispositius i es poden perdre si s’esborren les dades del navegador. Fes còpies de seguretat sovint.</div>`;
+  h += `<div class="mono muted" style="font-size:12.5px">${Object.keys(S.exercises).length} exercicis · ${Object.keys(S.routines).length} rutines · ${nS} sessions${pending.size ? ` · ${pending.size} canvis pendents de desar` : ''}</div></div></div>`;
+  h += `<div class="section rv"><header><h2>Exportar<span class="dot">.</span></h2></header><div class="two"><button class="btn" data-action="export-json">Còpia de seguretat (JSON)</button><button class="btn" data-action="export-csv">Sèries en CSV</button></div><p class="faint" style="font-size:12px;margin:0">El JSON conté tot (rutines, exercicis, sessions i sèries) i serveix per restaurar. El CSV té una fila per sèrie, per obrir-lo amb Excel o Numbers.</p></div>`;
+  h += `<div class="section rv"><header><h2>Restaurar<span class="dot">.</span></h2></header><label class="btn" for="import-file" style="cursor:pointer">Restaurar des d’un fitxer JSON</label><input type="file" id="import-file" accept="application/json,.json" hidden><p class="faint" style="font-size:12px;margin:0">Afegeix o actualitza els registres de la còpia. No esborra res del que ja tens.</p></div>`;
+  h += `<div class="section rv"><header><h2>Preferències<span class="dot">.</span></h2></header><div class="grid2"><label class="f">Descans per defecte (segons)<input class="txt" id="set-rest" data-bind="set-rest" inputmode="numeric" value="${st.restDefault}"></label><label class="f">Increment suggerit (kg)<input class="txt" id="set-inc" data-bind="set-inc" inputmode="decimal" value="${String(st.increment).replace('.', ',')}"></label></div></div>`;
+  return h;
+};
+
+/* ---------- sheets ---------- */
+function openSheet(html) { const root = $('#sheet'); root.innerHTML = `<div class="scrim" data-action="sheet-scrim"><div class="sheet" role="dialog" aria-modal="true">${html}</div></div>`; const f = root.querySelector('input:not([type=hidden]),button'); if (f && f.tagName === 'INPUT') f.focus(); }
+function closeSheet() { $('#sheet').innerHTML = ''; }
+let confirmResolve = null;
+function confirmBox({ title, body, ok = 'D’acord', cancel = 'Cancel·lar', danger = false, extra = '' }) {
+  return new Promise(res => {
+    confirmResolve = res;
+    openSheet(`<h2>${esc(title)}</h2><p style="margin:0">${esc(body)}</p>${extra}<div class="row"><button class="btn grow" data-action="confirm-no">${esc(cancel)}</button><button class="btn grow ${danger ? 'danger' : 'primary'}" style="${danger ? '' : 'font-size:16px'}" data-action="confirm-yes">${esc(ok)}</button></div>`);
+  });
+}
+function resolveConfirm(v) { const r = confirmResolve; confirmResolve = null; closeSheet(); if (r) r(v); }
+let toastT;
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 3200); }
+
+function startPicker() {
+  const d = derived(), rs = sortedRoutines();
+  let next = null, oldest = Infinity;
+  rs.forEach(r => { const l = d.finished.filter(s => s.routineId === r.id).pop(); const t = l ? l.startedAt : -1; if (t < oldest) { oldest = t; next = r; } });
+  openSheet(`<span class="kicker">Començar entrenament</span><h2>Quin dia toca<span class="dot">?</span></h2><div class="routines">${rs.map(r => routineCard(r, next && r.id === next.id && d.finished.length ? 'suggest' : '').replace('data-action="open-routine"', 'data-action="pick-routine"')).join('')}</div>${next && d.finished.length ? `<p class="muted" style="margin:0;font-size:14px">En blau, la que fa més temps que no fas: ${esc(next.name)}.</p>` : ''}<button class="btn" data-action="close-sheet">Cancel·lar</button>`);
+}
+
+/* Exercise picker for routine editor */
+function addItemSheet(routineId, q = '') {
+  const r = S.routines[routineId];
+  const inR = new Set((r.items || []).map(i => i.exerciseId));
+  const list = Object.values(S.exercises).filter(e => e.name.toLowerCase().includes(q.toLowerCase())).sort((a, b) => a.name.localeCompare(b.name));
+  openSheet(`<span class="eyebrow">Afegir a ${esc(r.name)}</span><h2>Exercici</h2><input class="txt" id="ex-search" data-bind="ex-search" data-id="${esc(routineId)}" placeholder="Cerca o escriu el nom d’un exercici nou" value="${esc(q)}" autocomplete="off">
+    <div class="list" id="ex-pick-list">${list.map(e => `<button class="li" data-action="pick-ex" data-id="${esc(routineId)}" data-ex="${esc(e.id)}" ${inR.has(e.id) ? 'disabled' : ''}><span class="main"><span class="t" style="display:block">${esc(e.name)}</span><span class="s" style="display:block">${inR.has(e.id) ? 'Ja és a la rutina' : esc(routinesUsing(e.id).map(x => x.name).join(', ') || 'Cap rutina')}</span></span><span class="chev">+</span></button>`).join('') || '<div class="li muted">Cap exercici coincideix</div>'}</div>
+    ${q.trim() && !list.some(e => e.name.toLowerCase() === q.trim().toLowerCase()) ? `<button class="btn primary" style="font-size:16px" data-action="create-ex-add" data-id="${esc(routineId)}">Crear «${esc(q.trim())}» i afegir-lo</button>` : ''}
+    <button class="btn" data-action="close-sheet">Tancar</button>`);
+  const inp = $('#ex-search'); if (inp) { inp.focus(); inp.setSelectionRange(q.length, q.length); }
+}
+function slug(s) { return s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'exercici'; }
+function createExercise(name) {
+  name = name.trim(); if (!name) return null;
+  const ex = Object.values(S.exercises).find(e => e.name.toLowerCase() === name.toLowerCase());
+  if (ex) return ex.id;
+  let id = slug(name); if (S.exercises[id]) id += '-' + Math.random().toString(36).slice(2, 6);
+  put('exercises', id, { id, name, createdAt: now() }, 0); S.rev++;
+  return id;
+}
+
+/* ---------- export / import ---------- */
+function backupObj() {
+  return { app: 'personal-gym-tracker', version: 1, exportedAt: now(), exercises: Object.values(S.exercises), routines: Object.values(S.routines), sessions: Object.values(S.sessions), config: Object.entries(S.config).map(([id, v]) => Object.assign({ id }, v)) };
+}
+const csvCell = v => { const s = v == null ? '' : String(v); return /[",\n;]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+function toCSV() {
+  const head = ['session_id', 'data', 'hora_inici', 'rutina', 'estat_sessio', 'exercise_id', 'exercici', 'serie', 'pes_kg', 'reps', 'estat_serie', 'sensacio', 'observacio_serie', 'completada_a', 'volum_serie_kg', 'notes_exercici'];
+  const rows = [head];
+  derived().sessions.forEach(s => (s.exercises || []).forEach(e => e.sets.forEach((x, j) => {
+    const done = isDone(x);
+    rows.push([s.id, new Date(s.startedAt).toISOString().slice(0, 10), tFmt(s.startedAt), s.routineName, s.status, e.exerciseId, exName(e.exerciseId, e.name), j + 1, x.weight ?? '', x.reps ?? '', done ? 'completada' : 'pendent', x.feel ? FEEL_LABEL[x.feel] : '', x.note || '', x.completedAt ? new Date(x.completedAt).toISOString() : '', done ? (num(x.weight) || 0) * x.reps : '', e.notes || '']);
+  })));
+  return '﻿' + rows.map(r => r.map(csvCell).join(',')).join('\n');
+}
+async function saveFile(filename, text) {
+  if (downloads) {
+    try { await downloads.save({ filename, data: text }); toast('Fitxer preparat: ' + filename); return; }
+    catch (e) { if (e && e.code === 'declined') return; if (!['unavailable', 'not_granted', 'capability_disabled', 'capability_removed'].includes(e && e.code)) { toast('No s’ha pogut desar el fitxer (' + (e.code || 'error') + ')'); return; } }
+  }
+  try {
+    const file = new File([text], filename, { type: filename.endsWith('.csv') ? 'text/csv' : 'application/json' });
+    if (!window.claude && navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: filename }); return; }
+  } catch (e) { if (e && e.name === 'AbortError') return; }
+  try {
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type: filename.endsWith('.csv') ? 'text/csv' : 'application/json' })); a.download = filename; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  } catch { toast('Aquesta vista no permet descarregar fitxers.'); }
+}
+async function importBackup(obj) {
+  if (!obj || obj.app !== 'personal-gym-tracker') { toast('Aquest fitxer no és una còpia de Personal Gym Tracker.'); return; }
+  const counts = { exercises: 0, routines: 0, sessions: 0 };
+  const ok = await confirmBox({ title: 'Restaurar còpia', body: `La còpia té ${(obj.exercises || []).length} exercicis, ${(obj.routines || []).length} rutines i ${(obj.sessions || []).length} sessions. S’afegiran o actualitzaran; no s’esborrarà res.`, ok: 'Restaurar' });
+  if (!ok) return;
+  for (const c of ['exercises', 'routines', 'sessions', 'config']) for (const doc of obj[c] || []) {
+    if (!doc || !doc.id) continue;
+    const cur = S[c][doc.id];
+    if (cur && (cur.updatedAt || 0) > (doc.updatedAt || 0)) continue;
+    const data = clone(doc); if (c === 'config') delete data.id;
+    data.updatedAt = data.updatedAt || now();
+    S[c][doc.id] = data; persist(c, doc.id, 30 + Math.random() * 400); if (counts[c] != null) counts[c]++;
+  }
+  S.rev++; render();
+  toast(`Restaurat: ${counts.exercises} exercicis, ${counts.routines} rutines, ${counts.sessions} sessions.`);
+}
+
+/* ---------- rest timer ---------- */
+let rest = null;
+function startRest(sec, label) {
+  if (!sec) return;
+  rest = { end: now() + sec * 1000, total: sec, label };
+  tickRest(); clearInterval(rest.iv); rest.iv = setInterval(tickRest, 250);
+}
+function stopRest() { if (rest) clearInterval(rest.iv); rest = null; $('#rest').hidden = true; }
+function tickRest() {
+  const el = $('#rest'); if (!rest) return;
+  const left = Math.round((rest.end - now()) / 1000);
+  const over = left <= 0;
+  if (over && !rest.beeped) { rest.beeped = true; beep(); try { navigator.vibrate && navigator.vibrate([200, 100, 200]); } catch {} }
+  const a = Math.abs(left), mm = Math.floor(a / 60), ss = String(a % 60).padStart(2, '0');
+  el.hidden = false; el.classList.toggle('over', over);
+  el.innerHTML = `<div class="bar" style="width:${over ? 100 : (1 - left / rest.total) * 100}%"></div><div class="in"><span class="cl"><span class="clock">${over ? '+' : ''}${mm}:${ss}</span><span class="lbl">${over ? 'Descans acabat' : esc(rest.label || 'Descans')}</span></span><button class="btn sm" data-action="rest-add" data-s="-15">−15</button><button class="btn sm" data-action="rest-add" data-s="15">+15</button><button class="btn sm" data-action="rest-stop">${over ? 'Tancar' : 'Saltar'}</button></div>`;
+  if (over && left < -120) stopRest();
+}
+let actx;
+function beep() { try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); const o = actx.createOscillator(), g = actx.createGain(); o.frequency.value = 880; g.gain.setValueAtTime(.15, actx.currentTime); g.gain.exponentialRampToValueAtTime(.001, actx.currentTime + .5); o.connect(g).connect(actx.destination); o.start(); o.stop(actx.currentTime + .5); } catch {} }
+let wakeLock = null;
+async function requestWakeLock() { try { wakeLock = await navigator.wakeLock?.request('screen'); } catch { wakeLock = null; } }
+function releaseWakeLock() { try { wakeLock && wakeLock.release(); } catch {} wakeLock = null; }
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && view.name === 'workout' && curSession()?.status === 'active') requestWakeLock(); });
+setInterval(() => { const e = $('#elapsed'), s = curSession(); if (e && s) e.textContent = dur(now() - s.startedAt); }, 30000);
+
+async function authAction(kind) {
+  const email = ($('#login-email').value || '').trim(), pass = $('#login-pass').value || '', msg = $('#login-msg');
+  if (!email || pass.length < 6) { msg.textContent = 'Escriu el correu i una contrasenya d’almenys 6 caràcters.'; return; }
+  msg.textContent = kind === 'in' ? 'Entrant…' : 'Creant el compte…';
+  try {
+    const r = kind === 'in' ? await Supa.client.auth.signInWithPassword({ email, password: pass }) : await Supa.client.auth.signUp({ email, password: pass });
+    if (r.error) { msg.textContent = /Invalid login/i.test(r.error.message) ? 'El correu o la contrasenya no són correctes.' : /registered/i.test(r.error.message) ? 'Aquest correu ja té compte. Prem Entrar.' : 'No s’ha pogut: ' + r.error.message; return; }
+    if (!r.data.session) { msg.textContent = 'Compte creat. Confirma’l des del correu que t’hem enviat i després prem Entrar.'; return; }
+    startSupa(r.data.session);
+  } catch (e) { msg.textContent = 'Sense connexió. Torna-ho a provar quan tinguis internet.'; }
+}
+
+/* ---------- events ---------- */
+const A = {
+  back: () => back(),
+  tab: el => tab(el.dataset.tab),
+  go: el => go(el.dataset.view),
+  'open-routine': el => go('routine', { id: el.dataset.id }),
+  'pick-routine': el => { closeSheet(); go('routine', { id: el.dataset.id }); },
+  'start-picker': () => startPicker(),
+  'close-sheet': () => closeSheet(),
+  'sheet-scrim': (el, ev) => { if (ev.target === el) { if (confirmResolve) resolveConfirm(false); else closeSheet(); } },
+  'confirm-yes': () => resolveConfirm(true),
+  'confirm-no': () => resolveConfirm(false),
+  start: async el => {
+    const act = derived().active;
+    if (act) {
+      const ok = await confirmBox({ title: 'Ja tens un entrenament en curs', body: `${act.routineName}, començat ${ago(act.startedAt)} a les ${tFmt(act.startedAt)}. Continua’l o finalitza’l abans de començar-ne un altre.`, ok: 'Continuar el que està en curs', cancel: 'Tornar' });
+      if (ok) { viewStack.length = 0; viewStack.push({ name: 'home', p: {} }); view = { name: 'workout', p: { id: act.id } }; render(); }
+      return;
+    }
+    startSession(el.dataset.id);
+  },
+  'open-workout': () => { const a = derived().active; if (a) { requestWakeLock(); go('workout', { id: a.id }); } },
+  'toggle-ex': el => { const s = curSession() || S.sessions[view.p.id]; const k = s.id + ':' + el.dataset.ex; UI.collapsed[k] = !UI.collapsed[k]; rerenderCard(s, +el.dataset.ex); },
+  'toggle-set': el => {
+    const s = curSession(); if (!s) return;
+    const i = +el.dataset.ex, j = +el.dataset.set, x = s.exercises[i].sets[j];
+    if (isDone(x)) { x.status = 'pending'; x.completedAt = null; }
+    else {
+      const rIn = $(`#r-${i}-${j}`), wIn = $(`#w-${i}-${j}`);
+      if (rIn) x.reps = num(rIn.value) != null ? Math.round(num(rIn.value)) : null;
+      if (wIn) x.weight = num(wIn.value);
+      if (!(x.reps > 0)) { if (rIn) { rIn.classList.remove('err'); void rIn.offsetWidth; rIn.classList.add('err'); rIn.focus(); } toast('Escriu les repeticions per completar la sèrie'); return; }
+      x.status = 'done'; x.completedAt = now();
+      if (s.status === 'active') startRest(s.exercises[i].rest ?? settings().restDefault, j + 1 < s.exercises[i].sets.length ? 'Següent: sèrie ' + (j + 2) + ' · ' + exName(s.exercises[i].exerciseId, s.exercises[i].name) : (s.exercises[i + 1] ? 'Següent: ' + exName(s.exercises[i + 1].exerciseId, s.exercises[i + 1].name) : 'Últim exercici fet'));
+    }
+    touchSession(s, 0); rerenderCard(s, i);
+  },
+  feel: el => { const s = curSession(); if (!s) return; const x = s.exercises[+el.dataset.ex].sets[+el.dataset.set]; x.feel = x.feel === el.dataset.feel ? null : el.dataset.feel; touchSession(s, 0); rerenderCard(s, +el.dataset.ex); },
+  'add-set': el => { const s = curSession(); const e = s.exercises[+el.dataset.ex]; const lastW = e.sets.length ? e.sets[e.sets.length - 1].weight : null; e.sets.push(newSet(e.sets.length + 1, lastW)); touchSession(s, 0); rerenderCard(s, +el.dataset.ex); },
+  'del-set': async el => { const s = curSession(); const e = s.exercises[+el.dataset.ex]; const x = e.sets[e.sets.length - 1]; if (!x) return;
+    if (x.reps != null || x.note) { const ok = await confirmBox({ title: 'Treure la sèrie ' + e.sets.length, body: 'Aquesta sèrie té dades registrades. Si la treus, s’esborraran.', ok: 'Treure-la', danger: true }); if (!ok) return; }
+    e.sets.pop(); touchSession(s, 0); rerenderCard(s, +el.dataset.ex); },
+  'ex-note': el => { const s = curSession(); const k = s.id + ':' + el.dataset.ex; UI.noteOpen[k] = true; rerenderCard(s, +el.dataset.ex); const t = $(`textarea[data-bind="ex-notes"][data-ex="${el.dataset.ex}"]`); t && t.focus(); },
+  'set-note-open': el => { const s = curSession(); UI.setOpen[el.dataset.ex + ':' + el.dataset.set] = true; rerenderCard(s, +el.dataset.ex); const t = $(`input[data-bind="set-note"][data-ex="${el.dataset.ex}"][data-set="${el.dataset.set}"]`); t && t.focus(); },
+  finish: () => finishSession(),
+  'done-edit': () => { const s = curSession(); viewStack.length = 0; viewStack.push({ name: 'history', p: {} }); view = { name: 'session', p: { id: s.id } }; render(); },
+  discard: async () => { const s = curSession(); const st = sessionStats(s);
+    const ok = await confirmBox({ title: 'Descartar entrenament', body: st.done ? `S’esborraran les ${st.done} sèries registrades d’aquesta sessió. No es pot desfer.` : 'S’esborrarà aquesta sessió sense sèries registrades.', ok: 'Descartar', danger: true });
+    if (!ok) return; remove('sessions', s.id); S.rev++; stopRest(); releaseWakeLock(); tab('home'); },
+  'open-session': el => { closeSheet(); go('session', { id: el.dataset.id }); },
+  'edit-session': el => go('workout', { id: el.dataset.id }),
+  'delete-session': async el => { const s = S.sessions[el.dataset.id]; const ok = await confirmBox({ title: 'Eliminar sessió', body: `S’eliminarà la sessió de ${s.routineName} del ${dShort(s.startedAt)} amb totes les seves sèries. No es pot desfer.`, ok: 'Eliminar', danger: true }); if (!ok) return; remove('sessions', s.id); S.rev++; back('history'); },
+  'hist-routine': el => { UI.hist.routine = el.dataset.id; render(true); },
+  'hist-clear': () => { UI.hist = { routine: 'all', from: '', to: '' }; render(true); },
+  'open-exercise': el => go('exercise', { id: el.dataset.id }),
+  'edit-routine': el => go('redit', { id: el.dataset.id }),
+  'new-routine': () => { const id = uid('r'); const rs = sortedRoutines(); put('routines', id, { id, name: 'Nova rutina', letter: '', color: 'white', order: rs.length, items: [] }, 0); S.rev++; go('redit', { id }); },
+  'routine-move': el => { const rs = sortedRoutines(); const k = rs.findIndex(r => r.id === el.dataset.id), j = k + +el.dataset.dir; if (j < 0 || j >= rs.length) return; [rs[k], rs[j]] = [rs[j], rs[k]]; rs.forEach((r, i) => { if (r.order !== i) { r.order = i; put('routines', r.id, r, 0); } }); S.rev++; render(true); },
+  'r-color': el => { const r = S.routines[view.p.id]; r.color = el.dataset.color; put('routines', r.id, r, 0); S.rev++; render(true); },
+  'item-move': el => { const r = S.routines[view.p.id]; const k = +el.dataset.k, j = k + +el.dataset.dir; [r.items[k], r.items[j]] = [r.items[j], r.items[k]]; put('routines', r.id, r, 0); S.rev++; render(true); },
+  'item-del': async el => { const r = S.routines[view.p.id]; const it = r.items[+el.dataset.k]; const ok = await confirmBox({ title: 'Treure de la rutina', body: `${exName(it.exerciseId)} deixarà de sortir a ${r.name}. L’exercici i el seu historial es mantenen.`, ok: 'Treure' }); if (!ok) return; r.items.splice(+el.dataset.k, 1); put('routines', r.id, r, 0); S.rev++; render(true); },
+  'add-item': () => addItemSheet(view.p.id),
+  'pick-ex': el => { const r = S.routines[el.dataset.id]; r.items = r.items || []; r.items.push({ exerciseId: el.dataset.ex, sets: 3, repMin: 5, repMax: 10, rest: null }); put('routines', r.id, r, 0); S.rev++; closeSheet(); render(true); },
+  'create-ex-add': el => { const q = $('#ex-search').value; const id = createExercise(q); if (!id) return; const r = S.routines[el.dataset.id]; r.items = r.items || []; r.items.push({ exerciseId: id, sets: 3, repMin: 5, repMax: 10, rest: null }); put('routines', r.id, r, 0); S.rev++; closeSheet(); render(true); },
+  'delete-routine': async el => { const r = S.routines[el.dataset.id]; const ok = await confirmBox({ title: 'Eliminar rutina', body: `S’eliminarà la rutina ${r.name}. Els exercicis i totes les sessions registrades es mantenen.`, ok: 'Eliminar', danger: true }); if (!ok) return; remove('routines', r.id); S.rev++; tab('manage'); },
+  'new-exercise': () => openSheet(`<h2>Nou exercici</h2><input class="txt" id="new-ex-name" placeholder="Nom de l’exercici" autocomplete="off"><div class="row"><button class="btn grow" data-action="close-sheet">Cancel·lar</button><button class="btn primary grow" style="font-size:16px" data-action="create-ex">Crear</button></div>`),
+  'create-ex': () => { const n = $('#new-ex-name').value; if (!n.trim()) return; createExercise(n); closeSheet(); render(true); toast('Exercici creat. Afegeix-lo a una rutina des de l’editor.'); },
+  'edit-exercise': el => { const e = S.exercises[el.dataset.id]; const n = (derived().exHist[e.id] || []).length;
+    openSheet(`<span class="eyebrow">Exercici</span><input class="txt" id="ex-rename" value="${esc(e.name)}" autocomplete="off"><div class="muted" style="font-size:13px">${esc(routinesUsing(e.id).map(r => r.name).join(', ') || 'No és a cap rutina')} · ${n} ${n === 1 ? 'sessió registrada' : 'sessions registrades'}</div>
+      <div class="row"><button class="btn grow" data-action="close-sheet">Tancar</button><button class="btn primary grow" style="font-size:16px" data-action="rename-ex" data-id="${esc(e.id)}">Desar nom</button></div><button class="btn danger" data-action="delete-ex" data-id="${esc(e.id)}">Eliminar exercici</button>`); },
+  'rename-ex': el => { const e = S.exercises[el.dataset.id]; const n = $('#ex-rename').value.trim(); if (!n) return; e.name = n; put('exercises', e.id, e, 0); S.rev++; closeSheet(); render(true); },
+  'delete-ex': async el => { const e = S.exercises[el.dataset.id]; const n = (derived().exHist[e.id] || []).length; const rs = routinesUsing(e.id);
+    const ok = await confirmBox({ title: 'Eliminar ' + e.name, danger: true, ok: n ? 'Sí, eliminar-lo' : 'Eliminar',
+      body: (n ? `Aquest exercici té ${n} ${n === 1 ? 'sessió registrada' : 'sessions registrades'}. Les sèries ja guardades es mantindran a l’historial amb el seu nom, però l’exercici desapareixerà del catàleg.` : 'Aquest exercici no té dades registrades.') + (rs.length ? ` També es traurà de: ${rs.map(r => r.name).join(', ')}.` : '') });
+    if (!ok) return; rs.forEach(r => { r.items = r.items.filter(i => i.exerciseId !== e.id); put('routines', r.id, r, 0); }); remove('exercises', e.id); S.rev++; render(true); toast('Exercici eliminat'); },
+  'export-json': () => saveFile(`gym-tracker-copia-${new Date().toISOString().slice(0, 10)}.json`, JSON.stringify(backupObj(), null, 1)),
+  'export-csv': () => saveFile(`gym-tracker-series-${new Date().toISOString().slice(0, 10)}.csv`, toCSV()),
+  'rest-add': el => { if (rest) { rest.end += +el.dataset.s * 1000; rest.total = Math.max(1, rest.total + +el.dataset.s); rest.beeped = rest.end <= now(); tickRest(); } },
+  'rest-stop': () => stopRest(),
+  login: () => authAction('in'),
+  signup: () => authAction('up'),
+  signout: async () => { const ok = await confirmBox({ title: 'Tancar la sessió', body: pending.size ? `Hi ha ${pending.size} canvis pendents de pujar. Si tanques la sessió ara, es perdran.` : 'Hauràs de tornar a entrar amb el teu correu i contrasenya.', ok: 'Tancar la sessió', danger: true }); if (!ok) return; try { await Supa.client.auth.signOut(); } catch {} try { localStorage.removeItem(LS.mirror); localStorage.removeItem(LS.pending); } catch {} location.reload(); },
+};
+document.addEventListener('click', ev => {
+  const el = ev.target.closest('[data-action]'); if (!el || el.disabled) return;
+  const fn = A[el.dataset.action]; if (fn) { if (el.tagName === 'A') ev.preventDefault(); try { initAudio(); fn(el, ev); } catch (e) { console.error(e); toast('Error: ' + e.message); } }
+});
+function initAudio() { try { if (!actx) { actx = new (window.AudioContext || window.webkitAudioContext)(); } if (actx.state === 'suspended') actx.resume(); } catch {} }
+
+const BIND = {
+  weight: (el, s) => { const x = s.exercises[+el.dataset.ex].sets[+el.dataset.set]; x.weight = num(el.value); touchSession(s); refreshCounts(s); },
+  reps: (el, s, type) => { const x = s.exercises[+el.dataset.ex].sets[+el.dataset.set]; const v = num(el.value); x.reps = v == null ? null : Math.max(0, Math.round(v));
+    if (isDone(x) === false && x.status === 'done' && type === 'change') { x.status = 'pending'; x.completedAt = null; touchSession(s, 0); rerenderCard(s, +el.dataset.ex); return; }
+    touchSession(s); refreshCounts(s); },
+  'set-note': (el, s) => { s.exercises[+el.dataset.ex].sets[+el.dataset.set].note = el.value; touchSession(s, 800); },
+  'ex-notes': (el, s) => { s.exercises[+el.dataset.ex].notes = el.value; touchSession(s, 800); },
+  'sess-notes': (el, s) => { s.notes = el.value; touchSession(s, 800); },
+};
+document.addEventListener('input', ev => {
+  const el = ev.target, b = el.dataset && el.dataset.bind; if (!b) return;
+  if (BIND[b]) { const s = curSession(); if (s) BIND[b](el, s, 'input'); return; }
+  if (b === 'ex-search') { const q = el.value; clearTimeout(el._t); el._t = setTimeout(() => addItemSheet(el.dataset.id, q), 120); return; }
+  if (b === 'r-name' || b === 'r-letter') { const r = S.routines[view.p.id]; if (b === 'r-name') r.name = el.value || 'Rutina'; else r.letter = el.value.toUpperCase(); put('routines', r.id, r, 700); S.rev++; return; }
+  if (b === 'it') { const r = S.routines[view.p.id]; const it = r.items[+el.dataset.k], f = el.dataset.f; const v = num(el.value);
+    if (f === 'rest') it.rest = v == null ? null : Math.max(0, Math.round(v));
+    else if (v != null) { it[f] = Math.max(f === 'sets' ? 1 : 1, Math.min(f === 'sets' ? 12 : 100, Math.round(v))); }
+    if (it.repMin > it.repMax && f !== 'sets' && f !== 'rest') { if (f === 'repMin') it.repMax = it.repMin; else it.repMin = it.repMax; }
+    put('routines', r.id, r, 700); S.rev++; return; }
+  if (b === 'set-rest' || b === 'set-inc') { const cur = Object.assign({}, settings()); const v = num(el.value); if (v == null || v < 0) return; if (b === 'set-rest') cur.restDefault = Math.round(v); else cur.increment = v; S.config.settings = cur; put('config', 'settings', cur, 700); S.rev++; return; }
+});
+document.addEventListener('change', ev => {
+  const el = ev.target, b = el.dataset && el.dataset.bind;
+  if (el.id === 'import-file') { const f = el.files && el.files[0]; if (!f) return; const rd = new FileReader(); rd.onload = () => { try { importBackup(JSON.parse(rd.result)); } catch { toast('El fitxer no és un JSON vàlid.'); } el.value = ''; }; rd.readAsText(f); return; }
+  if (!b) return;
+  if (b === 'reps') { const s = curSession(); if (s) BIND.reps(el, s, 'change'); return; }
+  if (b === 'hist-from' || b === 'hist-to') { UI.hist[b === 'hist-from' ? 'from' : 'to'] = el.value; el.blur(); render(true); return; }
+  if (b === 'cmp') { view.p = Object.assign({}, view.p, { cmp: el.value || null }); el.blur(); render(true); return; }
+});
+document.addEventListener('keydown', ev => {
+  if (ev.key === 'Escape' && $('#sheet').innerHTML) { if (confirmResolve) resolveConfirm(false); else closeSheet(); }
+  if (ev.key === 'Enter' && ev.target.matches('.num[data-bind="weight"]')) { ev.preventDefault(); const r = $(`#r-${ev.target.dataset.ex}-${ev.target.dataset.set}`); r && r.focus(); }
+  else if (ev.key === 'Enter' && ev.target.matches('.num[data-bind="reps"]')) { ev.preventDefault(); const b = ev.target.closest('.set').querySelector('.chk'); ev.target.blur(); b && b.click(); }
+  if (ev.key === 'Enter' && ev.target.id === 'new-ex-name') A['create-ex']();
+  if (ev.key === 'Enter' && (ev.target.id === 'login-pass' || ev.target.id === 'login-email')) { ev.preventDefault(); authAction('in'); }
+});
+window.addEventListener('pagehide', () => { for (const [key, p] of pending) if (p.timer) { clearTimeout(p.timer); const [c, id] = key.split('/'); flush(c, id); } writeMirror(); });
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') { for (const [key, p] of pending) if (p.timer) { clearTimeout(p.timer); const [c, id] = key.split('/'); flush(c, id); } writeMirror(); } });
+
+boot();
+</script>
+<script>if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));</script>
+</body>
+</html>
